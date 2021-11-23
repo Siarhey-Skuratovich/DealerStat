@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UserUserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
 
-  public UserUserServiceImpl(UserRepository userRepository) {
+  public UserServiceImpl(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 

@@ -1,6 +1,6 @@
 package com.leverx.dealerstat.controller;
 
-import com.leverx.dealerstat.model.ConfirmationCodeOfUser;
+import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.User;
 import com.leverx.dealerstat.service.confirmatiocodeservice.ConfirmationCodeService;
 import com.leverx.dealerstat.service.userservice.UserService;
@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -39,13 +40,22 @@ public class RegistrationController {
   }
 
   @GetMapping(value = "/auth/confirm/{code}")
-  public ResponseEntity<?> checkConfirmationCode(@PathVariable String code) {
-    confirmationCodeService.
+  public ResponseEntity<?> checkConfirmationCode(@PathVariable int code) {
+    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.read(code);
+    if (existedCode.isPresent()) {
+      User user = userService.read(existedCode.get().getUserId());
+      user.setEnabled(true);
+      userService.update(user);
+      confirmationCodeService.delete(existedCode.get().getCodeId());
+      return new ResponseEntity<>(HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   @GetMapping(value = "/codes")
-  public ResponseEntity<List<ConfirmationCodeOfUser>> readCodes() {
-    final List<ConfirmationCodeOfUser> codes = confirmationCodeService.readAll();
+  public ResponseEntity<List<ConfirmationUserCode>> readCodes() {
+    final List<ConfirmationUserCode> codes = confirmationCodeService.readAll();
     return codes != null && !codes.isEmpty()
             ? new ResponseEntity<>(codes, HttpStatus.OK)
             : new ResponseEntity<>(HttpStatus.NOT_FOUND);

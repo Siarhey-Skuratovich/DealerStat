@@ -1,6 +1,6 @@
 package com.leverx.dealerstat;
 
-import com.leverx.dealerstat.model.ConfirmationCodeOfUser;
+import com.leverx.dealerstat.model.ConfirmationUserCode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -17,8 +17,8 @@ public class RedisConfig {
   }
 
   @Bean
-  public RedisTemplate<String, ConfirmationCodeOfUser> redisTemplate() {
-    final RedisTemplate<String, ConfirmationCodeOfUser> template = new RedisTemplate<>();
+  public RedisTemplate<String, ConfirmationUserCode> redisTemplate() {
+    final RedisTemplate<String, ConfirmationUserCode> template = new RedisTemplate<>();
     template.setConnectionFactory(jedisConnectionFactory());
     return template;
   }

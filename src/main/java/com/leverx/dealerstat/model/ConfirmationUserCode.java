@@ -6,11 +6,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Data
 @RedisHash(value = "Code", timeToLive = 86400)
-public class ConfirmationCodeOfUser implements Serializable {
+public class ConfirmationUserCode implements Serializable {
   @Id
-  private int code;
+  private int codeId;
+  private UUID userId;
 }

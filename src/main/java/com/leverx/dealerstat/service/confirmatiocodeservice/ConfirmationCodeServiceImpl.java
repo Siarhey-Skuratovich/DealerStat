@@ -1,6 +1,6 @@
 package com.leverx.dealerstat.service.confirmatiocodeservice;
 
-import com.leverx.dealerstat.model.ConfirmationCodeOfUser;
+import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.User;
 import com.leverx.dealerstat.repositories.redis.ConfirmationCodeRepository;
 import org.springframework.data.util.Streamable;
@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
@@ -29,32 +27,35 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
 
   @Override
   public void createFor(User user, String siteURL) throws MessagingException, UnsupportedEncodingException {
-    ConfirmationCodeOfUser code = new ConfirmationCodeOfUser(user.hashCode());
+    ConfirmationUserCode code = new ConfirmationUserCode(user.hashCode(), user.getId());
     codeRepository.save(code);
     sendVerificationEmail(user, code, siteURL);
   }
 
   @Override
-  public List<ConfirmationCodeOfUser> readAll() {
+  public List<ConfirmationUserCode> readAll() {
     return Streamable.of(codeRepository.findAll()).toList();
   }
 
-  @Override
-  public Optional<ConfirmationCodeOfUser> exists(int code) {
-    return codeRepository.findById(code);
+  public Optional<ConfirmationUserCode> read(int codeId) {
+    return codeRepository.findById(codeId);
   }
 
   @Override
-  public boolean update(ConfirmationCodeOfUser code, UUID id) {
+  public boolean update(int codeId) {
     return false;
   }
 
   @Override
-  public boolean delete(UUID id) {
+  public boolean delete(int codeId) {
+    if (codeRepository.existsById(codeId)) {
+      codeRepository.deleteById(codeId);
+      return true;
+    }
     return false;
   }
 
-  private void sendVerificationEmail(User user, ConfirmationCodeOfUser code, String appURL)
+  private void sendVerificationEmail(User user, ConfirmationUserCode code, String appURL)
           throws MessagingException, UnsupportedEncodingException {
     String toAddress = user.getEmail();
     String fromAddress = "***REMOVED***";
@@ -74,7 +75,7 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
     helper.setSubject(subject);
 
     content = content.replace("[[name]]", user.getFirstName());
-    String verifyURL = appURL + "/auth/confirm/" + code.getCode();
+    String verifyURL = appURL + "/auth/confirm/" + code.getCodeId();
 
     content = content.replace("[[URL]]", verifyURL);
 
