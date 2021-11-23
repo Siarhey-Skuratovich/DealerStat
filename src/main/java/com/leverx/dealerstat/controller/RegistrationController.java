@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 public class RegistrationController {
@@ -29,19 +27,14 @@ public class RegistrationController {
 
   @PostMapping (value = "/registration")
   public ResponseEntity<?> createNewUser(@RequestBody User user, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
-    user.setId(UUID.randomUUID());
-    LocalDateTime localDateTime = LocalDateTime.now();
-    user.setLocalDateTime(localDateTime);
-    user.setRole(User.Role.Trader);
-    user.setEnabled(false);
     userService.create(user);
     confirmationCodeService.createFor(user, getAppURL(request));
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping(value = "/auth/confirm/{code}")
-  public ResponseEntity<?> checkConfirmationCode(@PathVariable int code) {
-    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.read(code);
+  @GetMapping(value = "/auth/confirm/{codeId}")
+  public ResponseEntity<?> checkConfirmationCode(@PathVariable int codeId) {
+    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.read(codeId);
     if (existedCode.isPresent()) {
       User user = userService.read(existedCode.get().getUserId());
       user.setEnabled(true);
@@ -52,6 +45,9 @@ public class RegistrationController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
+
+
+
 
   @GetMapping(value = "/codes")
   public ResponseEntity<List<ConfirmationUserCode>> readCodes() {

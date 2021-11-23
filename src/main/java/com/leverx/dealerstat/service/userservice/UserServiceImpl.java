@@ -2,8 +2,10 @@ package com.leverx.dealerstat.service.userservice;
 
 import com.leverx.dealerstat.model.User;
 import com.leverx.dealerstat.repositories.postgresql.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,13 +13,20 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
-  public UserServiceImpl(UserRepository userRepository) {
+  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
   public void create(User user) {
+    user.setId(UUID.randomUUID());
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    user.setLocalDateTime(LocalDateTime.now());
+    user.setRole(User.Role.Trader);
+    user.setEnabled(false);
     userRepository.save(user);
   }
 
