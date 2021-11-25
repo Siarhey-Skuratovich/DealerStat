@@ -1,14 +1,13 @@
 package com.leverx.dealerstat.service.userservice;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
-import com.leverx.dealerstat.model.User;
+import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.repository.postgresql.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,29 +22,29 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void create(User user) {
-    user.setId(UUID.randomUUID());
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    user.setLocalDateTime(LocalDateTime.now());
-    user.setRole(User.Role.Trader);
-    user.setEnabled(false);
-    userRepository.save(user);
+  public void create(UserEntity userEntity) {
+    userEntity.setId(UUID.randomUUID());
+    userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+    userEntity.setLocalDateTime(LocalDateTime.now());
+    userEntity.setRole(UserEntity.Role.Trader);
+    userEntity.setEnabled(false);
+    userRepository.save(userEntity);
   }
 
   @Override
-  public List<User> readAll() {
+  public List<UserEntity> readAll() {
     return userRepository.findAll();
   }
 
   @Override
-  public User read(UUID id) {
+  public UserEntity read(UUID id) {
     return userRepository.getById(id);
   }
 
   @Override
-  public boolean update(User user) {
-    if (userRepository.existsById(user.getId())) {
-      userRepository.save(user);
+  public boolean update(UserEntity userEntity) {
+    if (userRepository.existsById(userEntity.getId())) {
+      userRepository.save(userEntity);
       return true;
     }
     return false;
@@ -62,8 +61,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean confirmUserBy(ConfirmationUserCode existedCode) {
-      User user = read(existedCode.getUserId());
-      user.setEnabled(true);
-      return update(user);
+      UserEntity userEntity = read(existedCode.getUserId());
+      userEntity.setEnabled(true);
+      return update(userEntity);
   }
 }

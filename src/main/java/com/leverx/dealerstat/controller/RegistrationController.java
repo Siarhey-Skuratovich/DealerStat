@@ -1,7 +1,7 @@
 package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
-import com.leverx.dealerstat.model.User;
+import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.service.confirmatiocodeservice.ConfirmationCodeService;
 import com.leverx.dealerstat.service.userservice.UserService;
 import org.springframework.http.HttpStatus;
@@ -24,11 +24,10 @@ public class RegistrationController {
     this.userService = userService;
   }
 
-
   @PostMapping (value = "/registration")
-  public ResponseEntity<?> createNewUser(@RequestBody User user, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
-    userService.create(user);
-    confirmationCodeService.createFor(user, getAppURL(request));
+  public ResponseEntity<?> createNewUser(@RequestBody UserEntity userEntity, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+    userService.create(userEntity);
+    confirmationCodeService.createFor(userEntity, getAppURL(request));
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -42,25 +41,6 @@ public class RegistrationController {
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-  }
-
-
-
-
-  @GetMapping(value = "/codes")
-  public ResponseEntity<List<ConfirmationUserCode>> readCodes() {
-    final List<ConfirmationUserCode> codes = confirmationCodeService.readAll();
-    return codes != null && !codes.isEmpty()
-            ? new ResponseEntity<>(codes, HttpStatus.OK)
-            : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-  }
-
-  @GetMapping(value = "/users")
-  public ResponseEntity<List<User>> readUsers() {
-    final List<User> users = userService.readAll();
-    return users != null && !users.isEmpty()
-            ? new ResponseEntity<>(users, HttpStatus.OK)
-            : new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
   private String getAppURL(HttpServletRequest request) {

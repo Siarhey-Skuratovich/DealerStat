@@ -1,20 +1,20 @@
 package com.leverx.dealerstat.service.userservice;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
-import com.leverx.dealerstat.model.User;
+import com.leverx.dealerstat.model.UserEntity;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
 
-  void create(User user);
+  void create(UserEntity userEntity);
 
-  List<User> readAll();
+  List<UserEntity> readAll();
 
-  User read(UUID id);
+  UserEntity read(UUID id);
 
-  boolean update(User user);
+  boolean update(UserEntity userEntity);
 
   boolean delete(UUID id);
 

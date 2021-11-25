@@ -1,7 +1,7 @@
 package com.leverx.dealerstat.service.confirmatiocodeservice;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
-import com.leverx.dealerstat.model.User;
+import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.repository.redis.ConfirmationCodeRepository;
 import org.springframework.data.util.Streamable;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,10 +26,10 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
   }
 
   @Override
-  public void createFor(User user, String siteURL) throws MessagingException, UnsupportedEncodingException {
-    ConfirmationUserCode code = new ConfirmationUserCode(user.hashCode(), user.getId());
+  public void createFor(UserEntity userEntity, String siteURL) throws MessagingException, UnsupportedEncodingException {
+    ConfirmationUserCode code = new ConfirmationUserCode(userEntity.hashCode(), userEntity.getId());
     codeRepository.save(code);
-    sendVerificationEmail(user, code, siteURL);
+    sendVerificationEmail(userEntity, code, siteURL);
   }
 
   @Override
@@ -55,9 +55,9 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
     return false;
   }
 
-  private void sendVerificationEmail(User user, ConfirmationUserCode code, String appURL)
+  private void sendVerificationEmail(UserEntity userEntity, ConfirmationUserCode code, String appURL)
           throws MessagingException, UnsupportedEncodingException {
-    String toAddress = user.getEmail();
+    String toAddress = userEntity.getEmail();
     String fromAddress = "***REMOVED***";
     String senderName = "Dealer Stat";
     String subject = "Please confirm your registration";
@@ -74,7 +74,7 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
     helper.setTo(toAddress);
     helper.setSubject(subject);
 
-    content = content.replace("[[name]]", user.getFirstName());
+    content = content.replace("[[name]]", userEntity.getFirstName());
     String verifyURL = appURL + "/auth/confirm/" + code.getCodeId();
 
     content = content.replace("[[URL]]", verifyURL);

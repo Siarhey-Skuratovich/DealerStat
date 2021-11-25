@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS users;
-CREATE TABLE IF NOT EXISTS users
+DROP TABLE IF EXISTS userEntities;
+CREATE TABLE IF NOT EXISTS userEntities
 (
     id            uuid PRIMARY KEY,
     first_name     VARCHAR(200) NOT NULL,
