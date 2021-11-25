@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.repositories.postgresql;
+package com.leverx.dealerstat.repository.postgresql;
 
 import com.leverx.dealerstat.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

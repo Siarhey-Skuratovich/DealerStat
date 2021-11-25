@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.service.userservice;
 
+import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.User;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface UserService {
   boolean update(User user);
 
   boolean delete(UUID id);
+
+  boolean confirmUserBy(ConfirmationUserCode existedCode);
 }

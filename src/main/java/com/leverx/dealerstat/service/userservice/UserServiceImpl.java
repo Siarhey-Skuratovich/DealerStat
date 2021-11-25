@@ -1,12 +1,14 @@
 package com.leverx.dealerstat.service.userservice;
 
+import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.User;
-import com.leverx.dealerstat.repositories.postgresql.UserRepository;
+import com.leverx.dealerstat.repository.postgresql.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -56,5 +58,12 @@ public class UserServiceImpl implements UserService {
       return true;
     }
     return false;
+  }
+
+  @Override
+  public boolean confirmUserBy(ConfirmationUserCode existedCode) {
+      User user = read(existedCode.getUserId());
+      user.setEnabled(true);
+      return update(user);
   }
 }

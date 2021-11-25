@@ -1,4 +1,4 @@
-package com.leverx.dealerstat;
+package com.leverx.dealerstat.config;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 @Configuration
-@EnableRedisRepositories(basePackages = "com.leverx.dealerstat.repositories.redis")
+@EnableRedisRepositories(basePackages = "com.leverx.dealerstat.repository.redis")
 public class RedisConfig {
 
   @Bean

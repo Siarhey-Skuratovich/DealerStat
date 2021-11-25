@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.repositories.redis;
+package com.leverx.dealerstat.repository.redis;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import org.springframework.data.keyvalue.repository.KeyValueRepository;

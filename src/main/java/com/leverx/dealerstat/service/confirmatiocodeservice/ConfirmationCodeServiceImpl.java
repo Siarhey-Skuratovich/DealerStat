@@ -2,7 +2,7 @@ package com.leverx.dealerstat.service.confirmatiocodeservice;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.User;
-import com.leverx.dealerstat.repositories.redis.ConfirmationCodeRepository;
+import com.leverx.dealerstat.repository.redis.ConfirmationCodeRepository;
 import org.springframework.data.util.Streamable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

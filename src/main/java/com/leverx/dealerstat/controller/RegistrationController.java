@@ -36,9 +36,7 @@ public class RegistrationController {
   public ResponseEntity<?> checkConfirmationCode(@PathVariable int codeId) {
     Optional<ConfirmationUserCode> existedCode = confirmationCodeService.read(codeId);
     if (existedCode.isPresent()) {
-      User user = userService.read(existedCode.get().getUserId());
-      user.setEnabled(true);
-      userService.update(user);
+      userService.confirmUserBy(existedCode.get());
       confirmationCodeService.delete(existedCode.get().getCodeId());
       return new ResponseEntity<>(HttpStatus.OK);
     } else {
