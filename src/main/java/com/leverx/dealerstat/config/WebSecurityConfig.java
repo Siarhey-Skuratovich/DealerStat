@@ -1,6 +1,5 @@
 package com.leverx.dealerstat.config;
 
-import com.leverx.dealerstat.AuthenticationEntryPointImpl;
 import com.leverx.dealerstat.model.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,18 +21,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   private final AuthenticationEntryPointImpl authenticationEntryPoint;
 
   private static final String ADMIN_USERNAME = "***REMOVED***";
-  private static final String ADMIN_PASSWORD;
-
-  static  {
-    String password = "***REMOVED***";
-    ADMIN_PASSWORD = new BCryptPasswordEncoder().encode(password);
-  }
+  private static final String ADMIN_PASSWORD = new BCryptPasswordEncoder().encode("***REMOVED***");
+  private static final String ADMIN_ROLE = UserEntity.Role.Admin.name();
 
 
   public WebSecurityConfig(DataSource dataSource, AuthenticationEntryPointImpl authenticationEntryPoint) {
     this.dataSource = dataSource;
     this.authenticationEntryPoint = authenticationEntryPoint;
-
   }
 
   @Bean
@@ -43,28 +37,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http        //csrf().disable();
+    http
             .authorizeRequests()
             .antMatchers("/registration", "/auth/confirm/{codeId}")
             .permitAll()
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.GET, "/users", "/codes")
-            .hasRole("Admin")
+            .hasRole(ADMIN_ROLE)
             .and()
             .authorizeRequests()
-            .anyRequest().authenticated()
+            .anyRequest()
+            .authenticated()
             .and()
             .formLogin()
             .loginProcessingUrl("/auth")
-            .permitAll()
-            .and()
+            .disable()
             .httpBasic()
             .authenticationEntryPoint(authenticationEntryPoint)
             .and()
             .csrf()
-            .ignoringAntMatchers("/registration");
-//            .anyRequest().permitAll();
+            .ignoringAntMatchers("/registration", "/auth", "/logout");
   }
 
   @Autowired
@@ -84,6 +77,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   public void initialize(AuthenticationManagerBuilder builder) throws Exception {
     builder.inMemoryAuthentication().withUser(ADMIN_USERNAME)
-            .password(ADMIN_PASSWORD).roles(UserEntity.Role.Admin.name());
+            .password(ADMIN_PASSWORD).roles(ADMIN_ROLE);
   }
 }

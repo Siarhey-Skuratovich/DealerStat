@@ -19,4 +19,6 @@ public interface UserService {
   boolean delete(UUID id);
 
   boolean confirmUserBy(ConfirmationUserCode existedCode);
+
+  boolean containsNoSuch(String email);
 }

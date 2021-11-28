@@ -65,4 +65,9 @@ public class UserServiceImpl implements UserService {
       userEntity.setEnabled(true);
       return update(userEntity);
   }
+
+  @Override
+  public boolean containsNoSuch(String email) {
+    return userRepository.findByEmail(email) == null;
+  }
 }

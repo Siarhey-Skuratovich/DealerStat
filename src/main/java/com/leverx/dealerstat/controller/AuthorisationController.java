@@ -1,6 +1,5 @@
 package com.leverx.dealerstat.controller;
 
-import com.leverx.dealerstat.service.userservice.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthorisationController {
-  private final UserService userService;
-
-  public AuthorisationController(UserService userService) {
-    this.userService = userService;
-  }
 
   @PostMapping(value = "/auth")
-  public ResponseEntity<?> authorise() {
+  public ResponseEntity<?> auth() {
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PostMapping(value = "/logout")
+  public ResponseEntity<?> logout() {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }
