@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ConfirmationCodeService {
 
-  Optional<ConfirmationUserCode> createConfirmationCodeFor(UserEntity userEntity);
+  ConfirmationUserCode createConfirmationCodeFor(UserEntity userEntity) throws InstantiationException;
 
   List<ConfirmationUserCode> readAll();
 

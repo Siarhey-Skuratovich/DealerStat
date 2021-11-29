@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Service
 public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
-
   private final ConfirmationCodeRepository codeRepository;
 
   public ConfirmationCodeServiceImpl(ConfirmationCodeRepository codeRepository) {
@@ -20,22 +19,16 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
   }
 
   @Override
-  public Optional<ConfirmationUserCode> createConfirmationCodeFor(UserEntity userEntity) {
+  public ConfirmationUserCode createConfirmationCodeFor(UserEntity userEntity) throws InstantiationException {
     ConfirmationUserCode.Builder confirmationUserCodeBuilder = ConfirmationUserCode.newBuilder();
 
     confirmationUserCodeBuilder.setUserId(userEntity.getId());
     confirmationUserCodeBuilder.setCodeId(generateUniqueCode());
 
-    ConfirmationUserCode confirmationUserCode;
-    try {
-      confirmationUserCode = confirmationUserCodeBuilder.build();
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-      return Optional.empty();
-    }
+    ConfirmationUserCode confirmationUserCode = confirmationUserCodeBuilder.build();
 
     codeRepository.save(confirmationUserCode);
-    return Optional.of(confirmationUserCode);
+    return confirmationUserCode;
   }
 
   @Override
@@ -43,6 +36,7 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
     return Streamable.of(codeRepository.findAll()).toList();
   }
 
+  @Override
   public Optional<ConfirmationUserCode> read(int codeId) {
     return codeRepository.findById(codeId);
   }
@@ -63,10 +57,11 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
 
   private int generateUniqueCode() {
     SecureRandom secureRandom = new SecureRandom();
-    int randomCode = secureRandom.nextInt() * 1000000000;
+    final int leftBound = 1000000000;
+    int randomCode = secureRandom.nextInt(Integer.MAX_VALUE - leftBound) + leftBound;
     Optional<ConfirmationUserCode> existedCode = read(randomCode);
     while (existedCode.isPresent()) {
-      randomCode = secureRandom.nextInt() * 1000000000;
+      randomCode = secureRandom.nextInt(Integer.MAX_VALUE - leftBound) + leftBound;
     }
     return randomCode;
   }

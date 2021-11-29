@@ -1,9 +1,13 @@
 package com.leverx.dealerstat.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
-public class EmailLetter {
+import java.io.Serializable;
+
+@Getter
+@NoArgsConstructor
+public class EmailLetter implements Serializable {
 
   private final String fromAddress = "***REMOVED***";
   private final String senderName = "Dealer Stat";
@@ -28,7 +32,7 @@ public class EmailLetter {
     content = content.replace("[[URL]]", verifyURL);
   }
 
-  public void makeRestPasswordLetter (String firstName, ConfirmationUserCode code) {
+  public void makeResetPasswordLetter(String firstName, ConfirmationUserCode code) {
     subject = "Code to reset password";
     content = "Dear [[name]],<br>"
             + "Here is the code to confirm your intention to reset password:<br>"

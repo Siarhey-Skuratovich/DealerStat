@@ -14,6 +14,8 @@ public interface UserService {
 
   UserEntity read(UUID id);
 
+  UserEntity read(String email);
+
   boolean update(UserEntity userEntity);
 
   boolean delete(UUID id);

@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
             .authorizeRequests()
-            .antMatchers("/registration", "/auth/confirm/{codeId}")
+            .antMatchers("/registration", "/auth/**")
             .permitAll()
             .and()
             .authorizeRequests()
@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authenticationEntryPoint(authenticationEntryPoint)
             .and()
             .csrf()
-            .ignoringAntMatchers("/registration", "/auth", "/logout");
+            .ignoringAntMatchers("/registration", "/auth/**", "/logout");
   }
 
   @Autowired

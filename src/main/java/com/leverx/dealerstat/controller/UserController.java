@@ -8,9 +8,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-
-  @PostMapping(value = "/auth/forgot_password")
-  public ResponseEntity<?> sendCodeToEmailIfForgotPassword(@RequestBody String email) {
-
-  }
 }
