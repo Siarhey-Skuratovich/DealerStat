@@ -33,8 +33,8 @@ public class UserEntity implements Serializable {
   @Column(name = "email", unique = true)
   private String email;
 
-  @Column(name = "local_date_time")
-  private LocalDateTime localDateTime;
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
 
   @Column(name = "role")
   @Enumerated(EnumType.STRING)
@@ -46,6 +46,5 @@ public class UserEntity implements Serializable {
   public enum Role {
     Admin,
     Trader,
-    Anonym;
   }
 }

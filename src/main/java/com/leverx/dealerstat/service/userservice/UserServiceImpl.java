@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
   public void create(UserEntity userEntity) {
     userEntity.setId(UUID.randomUUID());
     userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-    userEntity.setLocalDateTime(LocalDateTime.now());
+    userEntity.setCreatedAt(LocalDateTime.now());
     userEntity.setRole(UserEntity.Role.Trader);
     userEntity.setEnabled(false);
     userRepository.save(userEntity);
