@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   private static final String ADMIN_USERNAME = "***REMOVED***";
   private static final String ADMIN_PASSWORD = new BCryptPasswordEncoder().encode("***REMOVED***");
-  private static final String ADMIN_ROLE = UserEntity.Role.Admin.name();
+  private static final String ADMIN_ROLE = UserEntity.Role.ADMIN.name();
 
 
   public WebSecurityConfig(DataSource dataSource, AuthenticationEntryPointImpl authenticationEntryPoint) {
@@ -40,6 +40,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     http
             .authorizeRequests()
             .antMatchers("/registration", "/auth/**")
+            .permitAll()
+            .and()
+            .authorizeRequests()
+            .antMatchers(HttpMethod.GET, "/articles")
             .permitAll()
             .and()
             .authorizeRequests()

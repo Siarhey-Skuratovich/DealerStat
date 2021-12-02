@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -18,7 +20,12 @@ import java.util.UUID;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserEntity implements Serializable {
   @Id
-  @Column(name = "id")
+  @Column(name = "user_id")
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(
+          name = "UUID",
+          strategy = "org.hibernate.id.UUIDGenerator"
+  )
   private UUID id;
 
   @Column(name = "first_name")
@@ -43,8 +50,12 @@ public class UserEntity implements Serializable {
   @Column(name = "enabled")
   private Boolean enabled;
 
+  @OneToMany(mappedBy = "traderId")
+  private Set<Post> posts;
+
   public enum Role {
-    Admin,
-    Trader,
+    ADMIN,
+    TRADER,
+    ANONYM
   }
 }

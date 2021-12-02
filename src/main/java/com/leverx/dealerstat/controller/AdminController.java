@@ -2,8 +2,8 @@ package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.UserEntity;
-import com.leverx.dealerstat.service.confirmatiocodeservice.ConfirmationCodeService;
-import com.leverx.dealerstat.service.userservice.UserService;
+import com.leverx.dealerstat.service.confirmatiocode.ConfirmationCodeService;
+import com.leverx.dealerstat.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

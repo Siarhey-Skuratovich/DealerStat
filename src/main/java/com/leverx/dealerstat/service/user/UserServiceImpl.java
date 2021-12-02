@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.service.userservice;
+package com.leverx.dealerstat.service.user;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.UserEntity;
@@ -23,10 +23,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void create(UserEntity userEntity) {
-    userEntity.setId(UUID.randomUUID());
     userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
     userEntity.setCreatedAt(LocalDateTime.now());
-    userEntity.setRole(UserEntity.Role.Trader);
     userEntity.setEnabled(false);
     userRepository.save(userEntity);
   }

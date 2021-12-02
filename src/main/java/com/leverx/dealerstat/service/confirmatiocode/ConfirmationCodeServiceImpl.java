@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.service.confirmatiocodeservice;
+package com.leverx.dealerstat.service.confirmatiocode;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.UserEntity;

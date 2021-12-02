@@ -1,7 +1,8 @@
-package com.leverx.dealerstat.service.commentservice;
+package com.leverx.dealerstat.service.serviceof.impl;
 
 import com.leverx.dealerstat.model.Comment;
 import com.leverx.dealerstat.repository.postgresql.CommentRepository;
+import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -9,10 +10,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class CommentServiceImpl implements CommentService {
+public class CommentService implements ServiceOf<Comment> {
   private final CommentRepository commentRepository;
 
-  public CommentServiceImpl(CommentRepository commentRepository) {
+  public CommentService(CommentRepository commentRepository) {
     this.commentRepository = commentRepository;
   }
 

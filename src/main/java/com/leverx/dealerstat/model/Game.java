@@ -6,17 +6,17 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "comments")
+@Table(name = "games")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Comment {
+public class Game {
   @Id
-  @Column(name = "comment_id")
+  @Column(name = "game_id")
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(
           name = "UUID",
@@ -24,18 +24,9 @@ public class Comment {
   )
   private UUID id;
 
-  @Column(name = "message")
-  private String message;
+  @Column(name = "game_name")
+  private String name;
 
-  @Column(name = "post_id")
-  private UUID postId;
-
-  @Column(name = "author_id")
-  private UUID authorId;
-
-  @Column(name = "created_at")
-  private LocalDateTime createdAt;
-
-  @Column(name = "approved")
-  private Boolean approved;
+  /*@ManyToMany(mappedBy = "games")
+  Set<Post> posts;*/
 }

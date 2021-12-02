@@ -7,16 +7,17 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "comments")
+@Table(name = "game_objects")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Comment {
+public class GameObject {
   @Id
-  @Column(name = "comment_id")
+  @Column(name = "game_object_id")
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(
           name = "UUID",
@@ -24,11 +25,15 @@ public class Comment {
   )
   private UUID id;
 
-  @Column(name = "message")
-  private String message;
+  @Column(name = "title")
+  private String title;
 
-  @Column(name = "post_id")
-  private UUID postId;
+  @Column(name = "text")
+  private String text;
+
+  @Column(name = "status")
+  @Enumerated(EnumType.STRING)
+  private Status status;
 
   @Column(name = "author_id")
   private UUID authorId;
@@ -36,6 +41,17 @@ public class Comment {
   @Column(name = "created_at")
   private LocalDateTime createdAt;
 
-  @Column(name = "approved")
-  private Boolean approved;
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
+
+  @Column(name = "game_id")
+  private UUID gameId;
+
+  /*@ManyToMany(mappedBy = "gameObjects")
+  Set<Post> posts;*/
+
+  public enum Status {
+    AVAILABLE,
+    SOLD
+  }
 }
