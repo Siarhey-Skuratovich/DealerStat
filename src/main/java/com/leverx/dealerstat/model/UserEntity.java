@@ -26,7 +26,7 @@ public class UserEntity implements Serializable {
           name = "UUID",
           strategy = "org.hibernate.id.UUIDGenerator"
   )
-  private UUID id;
+  private UUID userId;
 
   @Column(name = "first_name")
   private String firstName;

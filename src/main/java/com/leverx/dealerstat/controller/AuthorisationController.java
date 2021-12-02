@@ -91,7 +91,7 @@ public class AuthorisationController {
   private void deleteIfAlreadyContainsCodeFor(UserEntity userEntity) {
     List<ConfirmationUserCode> userCodeList = confirmationCodeService.readAll();
     for (ConfirmationUserCode confirmationUserCode : userCodeList) {
-      if (confirmationUserCode.getUserId().equals(userEntity.getId())) {
+      if (confirmationUserCode.getUserId().equals(userEntity.getUserId())) {
         confirmationCodeService.delete(confirmationUserCode.getCodeId());
       }
     }

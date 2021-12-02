@@ -22,12 +22,13 @@ public class Comment {
           name = "UUID",
           strategy = "org.hibernate.id.UUIDGenerator"
   )
-  private UUID id;
+  private UUID commentId;
 
   @Column(name = "message")
   private String message;
 
   @Column(name = "post_id")
+  @JoinColumn(name="comment_id", nullable=false)
   private UUID postId;
 
   @Column(name = "author_id")

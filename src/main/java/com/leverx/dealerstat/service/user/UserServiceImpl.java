@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean update(UserEntity userEntity) {
-    if (userRepository.existsById(userEntity.getId())) {
+    if (userRepository.existsById(userEntity.getUserId())) {
       userRepository.save(userEntity);
       return true;
     }

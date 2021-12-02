@@ -33,7 +33,7 @@ public class PostService implements ServiceOf<Post> {
 
   @Override
   public boolean update(Post post) {
-    if (postRepository.existsById(post.getId())) {
+    if (postRepository.existsById(post.getPostId())) {
       postRepository.save(post);
       return true;
     }

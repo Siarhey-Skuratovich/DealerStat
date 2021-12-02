@@ -27,7 +27,7 @@ public class PostController {
   @PostMapping(value = "/articles")
   public ResponseEntity<?> createPost(@RequestBody Post post, Principal principal) {
     UserEntity author = userService.read(principal.getName());
-    post.setAuthorId(author.getId());
+    post.setAuthorId(author.getUserId());
     post.setApproved(false);
     postService.create(post);
     return new ResponseEntity<>(HttpStatus.OK);

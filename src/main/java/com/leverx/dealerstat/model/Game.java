@@ -22,7 +22,7 @@ public class Game {
           name = "UUID",
           strategy = "org.hibernate.id.UUIDGenerator"
   )
-  private UUID id;
+  private UUID gameId;
 
   @Column(name = "game_name")
   private String name;

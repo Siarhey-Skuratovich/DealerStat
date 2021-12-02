@@ -22,7 +22,7 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
   public ConfirmationUserCode createConfirmationCodeFor(UserEntity userEntity) throws InstantiationException {
     ConfirmationUserCode.Builder confirmationUserCodeBuilder = ConfirmationUserCode.newBuilder();
 
-    confirmationUserCodeBuilder.setUserId(userEntity.getId());
+    confirmationUserCodeBuilder.setUserId(userEntity.getUserId());
     confirmationUserCodeBuilder.setCodeId(generateUniqueCode());
 
     ConfirmationUserCode confirmationUserCode = confirmationUserCodeBuilder.build();

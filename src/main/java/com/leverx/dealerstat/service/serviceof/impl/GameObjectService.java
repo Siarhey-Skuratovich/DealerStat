@@ -33,7 +33,7 @@ public class GameObjectService implements ServiceOf<GameObject> {
 
   @Override
   public boolean update(GameObject gameObject) {
-    if (gameObjectRepository.existsById(gameObject.getId())) {
+    if (gameObjectRepository.existsById(gameObject.getGameObjectId())) {
       gameObjectRepository.save(gameObject);
       return true;
     }

@@ -22,7 +22,7 @@ public class Post {
           name = "UUID",
           strategy = "org.hibernate.id.UUIDGenerator"
   )
-  private UUID id;
+  private UUID postId;
 
   @Column(name = "trader_id")
   @JoinColumn(name="post_id", nullable=false)
@@ -42,6 +42,9 @@ public class Post {
 
   @Column(name = "approved")
   private Boolean approved;
+
+  @OneToMany(mappedBy = "postId")
+  private Set<Comment> comments;
 
   /*@ManyToMany
   @JoinTable(

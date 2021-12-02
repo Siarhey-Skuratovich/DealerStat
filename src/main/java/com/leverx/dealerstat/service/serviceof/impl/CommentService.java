@@ -19,7 +19,6 @@ public class CommentService implements ServiceOf<Comment> {
 
   @Override
   public void create(Comment comment) {
-    comment.setId(UUID.randomUUID());
     comment.setCreatedAt(LocalDateTime.now());
     comment.setApproved(false);
     commentRepository.save(comment);
