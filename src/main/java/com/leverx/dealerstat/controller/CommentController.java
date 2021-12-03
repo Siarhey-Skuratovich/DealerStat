@@ -10,11 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Predicate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -55,7 +51,12 @@ public class CommentController {
     return new ResponseEntity<>(comments, HttpStatus.OK);
   }
 
-  @GetMapping(value = "/users/{traderId}/comments/{commentId}")
+  @GetMapping("/comments/{commentId}")
+  public ResponseEntity<Comment> getComments(@PathVariable UUID commentId) {
+    return new ResponseEntity<>(commentService.read(commentId), HttpStatus.OK);
+  }
+
+  /*@GetMapping(value = "/users/{traderId}/comments/{commentId}")
   public ResponseEntity<Comment> getSpecificCommentRelatedToTheTrader(@PathVariable UUID traderId, @PathVariable UUID commentId) {
     UserEntity trader = userService.read(traderId);
     Set<Post> postsRelatedToTheTrader = trader.getPosts();
@@ -67,6 +68,11 @@ public class CommentController {
     return specificComment
             .map(comment -> new ResponseEntity<>(comment, HttpStatus.OK))
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
+  }*/
+
+  /*@GetMapping("/comments")
+  public ResponseEntity<List<Comment>> getComments() {
+    return new ResponseEntity<>(commentService.readAll(), HttpStatus.OK);
+  }*/
 }
 

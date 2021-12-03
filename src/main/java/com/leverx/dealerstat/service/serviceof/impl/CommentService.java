@@ -31,7 +31,7 @@ public class CommentService implements ServiceOf<Comment> {
 
   @Override
   public Comment read(UUID id) {
-    return null;
+    return commentRepository.getById(id);
   }
 
   @Override
