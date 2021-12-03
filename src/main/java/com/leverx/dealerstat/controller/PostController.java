@@ -38,6 +38,11 @@ public class PostController {
     return new ResponseEntity<>(postService.readAll(), HttpStatus.OK);
   }
 
+  @GetMapping("/articles/{postId}")
+  public ResponseEntity<Post> getSpecifiedPost(@PathVariable UUID postId) {
+    return new ResponseEntity<>(postService.read(postId), HttpStatus.OK);
+  }
+
   @GetMapping(value = "users/{traderId}/articles")
   public ResponseEntity<Set<Post>> getPostsAboutTrader(@PathVariable UUID traderId) {
     UserEntity trader = userService.read(traderId);

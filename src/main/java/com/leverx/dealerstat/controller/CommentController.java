@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -53,9 +55,18 @@ public class CommentController {
     return new ResponseEntity<>(comments, HttpStatus.OK);
   }
 
-  /*@GetMapping(value = "/users/{traderId}/comments/{commentId}")
+  @GetMapping(value = "/users/{traderId}/comments/{commentId}")
   public ResponseEntity<Comment> getSpecificCommentRelatedToTheTrader(@PathVariable UUID traderId, @PathVariable UUID commentId) {
- 
-  }*/
+    UserEntity trader = userService.read(traderId);
+    Set<Post> postsRelatedToTheTrader = trader.getPosts();
+    Optional<Comment> specificComment = postsRelatedToTheTrader.stream()
+            .map(Post::getComments)
+            .flatMap(Collection::parallelStream)
+            .filter(comment -> comment.getCommentId().equals(commentId))
+            .findFirst();
+    return specificComment
+            .map(comment -> new ResponseEntity<>(comment, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
 }
 
