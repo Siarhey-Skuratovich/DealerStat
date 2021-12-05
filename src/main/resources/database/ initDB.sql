@@ -45,15 +45,15 @@ CREATE TABLE IF NOT EXISTS games
     game_name VARCHAR(50) NOT NULL
 );
 
--- DROP TABLE IF EXISTS posts_games;
--- CREATE TABLE IF NOT EXISTS posts_games
--- (
---     post_id UUID,
---     game_id UUID,
---     PRIMARY KEY (post_id, game_id),
---     FOREIGN KEY (post_id) REFERENCES posts (post_id) ON UPDATE CASCADE,
---     FOREIGN KEY (game_id) REFERENCES games (game_id) ON UPDATE CASCADE
--- );
+DROP TABLE IF EXISTS posts_games;
+CREATE TABLE IF NOT EXISTS posts_games
+(
+    post_id UUID,
+    game_id UUID,
+    PRIMARY KEY (post_id, game_id),
+    FOREIGN KEY (post_id) REFERENCES posts (post_id) ON UPDATE CASCADE,
+    FOREIGN KEY (game_id) REFERENCES games (game_id) ON UPDATE CASCADE
+);
 
 DROP TABLE IF EXISTS game_objects;
 CREATE TABLE IF NOT EXISTS game_objects
@@ -71,15 +71,15 @@ CREATE TABLE IF NOT EXISTS game_objects
     FOREIGN KEY (game_id) REFERENCES games (game_id) ON UPDATE CASCADE
 );
 
--- DROP TABLE IF EXISTS posts_game_objects;
--- CREATE TABLE IF NOT EXISTS posts_game_objects
--- (
---     post_id        UUID,
---     game_object_id UUID,
---     PRIMARY KEY (post_id, game_object_id),
---     FOREIGN KEY (post_id) REFERENCES posts (post_id) ON UPDATE CASCADE,
---     FOREIGN KEY (game_object_id) REFERENCES game_objects (game_object_id) ON UPDATE CASCADE
--- );
+DROP TABLE IF EXISTS posts_game_objects;
+CREATE TABLE IF NOT EXISTS posts_game_objects
+(
+    post_id        UUID,
+    game_object_id UUID,
+    PRIMARY KEY (post_id, game_object_id),
+    FOREIGN KEY (post_id) REFERENCES posts (post_id) ON UPDATE CASCADE,
+    FOREIGN KEY (game_object_id) REFERENCES game_objects (game_object_id) ON UPDATE CASCADE
+);
 
 
 

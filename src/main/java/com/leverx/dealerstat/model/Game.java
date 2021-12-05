@@ -27,6 +27,6 @@ public class Game {
   @Column(name = "game_name")
   private String name;
 
-  /*@ManyToMany(mappedBy = "games")
-  Set<Post> posts;*/
+  @ManyToMany(mappedBy = "games")
+  Set<Post> posts;
 }

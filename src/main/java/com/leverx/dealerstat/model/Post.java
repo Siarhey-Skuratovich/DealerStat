@@ -25,7 +25,7 @@ public class Post {
   private UUID postId;
 
   @Column(name = "trader_id")
-  @JoinColumn(name="post_id", nullable=false)
+  @JoinColumn(name = "post_id", nullable = false)
   private UUID traderId;
 
   @Column(name = "trader_first_name")
@@ -43,13 +43,18 @@ public class Post {
   @Column(name = "approved")
   private Boolean approved;
 
-  @OneToMany(mappedBy = "postId")
+  @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Comment> comments;
 
-  /*@ManyToMany
+//  public void removeComment(Comment comment) {
+//    comments.remove(comment);
+//    comment.setPostId(null);
+//  }
+
+  @ManyToMany
   @JoinTable(
           name = "posts_games",
-          joinColumns = @JoinColumn (name = "post_id"),
+          joinColumns = @JoinColumn(name = "post_id"),
           inverseJoinColumns = @JoinColumn(name = "game_id")
   )
   Set<Game> games;
@@ -57,8 +62,8 @@ public class Post {
   @ManyToMany
   @JoinTable(
           name = "posts_game_objects",
-          joinColumns = @JoinColumn (name = "post_id"),
+          joinColumns = @JoinColumn(name = "post_id"),
           inverseJoinColumns = @JoinColumn(name = "game_object_id")
   )
-  Set<GameObject> gameObjects;*/
+  Set<GameObject> gameObjects;
 }

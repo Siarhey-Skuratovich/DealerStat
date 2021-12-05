@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,6 +58,20 @@ public class CommentController {
     return new ResponseEntity<>(commentService.read(commentId), HttpStatus.OK);
   }
 
+  @DeleteMapping("comments/{commentId}")
+  public ResponseEntity<Comment> deleteComment(@PathVariable UUID commentId) {
+    commentService.delete(commentId);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PutMapping ("/comments")
+  public ResponseEntity<Comment> updateComment(@RequestBody Comment updatedComment) {
+    if (    commentService.update(updatedComment)) {
+      return new ResponseEntity<>(HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  }
+
   /*@GetMapping(value = "/users/{traderId}/comments/{commentId}")
   public ResponseEntity<Comment> getSpecificCommentRelatedToTheTrader(@PathVariable UUID traderId, @PathVariable UUID commentId) {
     UserEntity trader = userService.read(traderId);
@@ -70,9 +86,9 @@ public class CommentController {
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }*/
 
-  /*@GetMapping("/comments")
+  @GetMapping("/comments")
   public ResponseEntity<List<Comment>> getComments() {
     return new ResponseEntity<>(commentService.readAll(), HttpStatus.OK);
-  }*/
+  }
 }
 

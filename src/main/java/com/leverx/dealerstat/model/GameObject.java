@@ -47,8 +47,8 @@ public class GameObject {
   @Column(name = "game_id")
   private UUID gameId;
 
-  /*@ManyToMany(mappedBy = "gameObjects")
-  Set<Post> posts;*/
+  @ManyToMany(mappedBy = "gameObjects")
+  Set<Post> posts;
 
   public enum Status {
     AVAILABLE,

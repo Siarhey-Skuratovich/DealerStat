@@ -1,9 +1,11 @@
 package com.leverx.dealerstat.controller;
 
+import com.leverx.dealerstat.model.Game;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
+import org.hibernate.SessionFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class PostController {
   private final ServiceOf<Post> postService;
   private final UserService userService;
+  private static SessionFactory sessionFactory;
 
   public PostController(ServiceOf<Post> postService, UserService userService) {
     this.postService = postService;
@@ -25,10 +28,16 @@ public class PostController {
   }
 
   @PostMapping(value = "/articles")
-  public ResponseEntity<?> createPost(@RequestBody Post post, Principal principal) {
+  public ResponseEntity<?> createPost(@RequestBody Post post, Principal principal, @RequestBody(required=false) Game[] games) {
     UserEntity author = userService.read(principal.getName());
     post.setAuthorId(author.getUserId());
     post.setApproved(false);
+
+    for (Game game : games) {
+      post.getGames().add(game);
+
+    }
+
     postService.create(post);
     return new ResponseEntity<>(HttpStatus.OK);
   }

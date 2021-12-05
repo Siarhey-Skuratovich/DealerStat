@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.repository.redis;
+package com.leverx.dealerstat.service.serviceof.impl;
 
 import com.leverx.dealerstat.model.Game;
 import com.leverx.dealerstat.repository.postgresql.GameRepository;
@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class GameServiceImpl implements ServiceOf<Game> {
+public class GameService implements ServiceOf<Game> {
   private final GameRepository gameRepository;
 
-  public GameServiceImpl(GameRepository gameRepository) {
+  public GameService(GameRepository gameRepository) {
     this.gameRepository = gameRepository;
   }
 

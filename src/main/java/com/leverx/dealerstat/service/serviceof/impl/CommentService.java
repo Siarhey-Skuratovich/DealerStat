@@ -36,11 +36,19 @@ public class CommentService implements ServiceOf<Comment> {
 
   @Override
   public boolean update(Comment comment) {
+    if (commentRepository.existsById(comment.getCommentId())) {
+      commentRepository.save(comment);
+      return true;
+    }
     return false;
   }
 
   @Override
   public boolean delete(UUID id) {
+    if (commentRepository.existsById(id)) {
+      commentRepository.deleteById(id);
+      return true;
+    }
     return false;
   }
 }
