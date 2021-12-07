@@ -1,17 +1,19 @@
 package com.leverx.dealerstat.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
 @Entity
-@NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "games")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Game {
@@ -27,6 +29,7 @@ public class Game {
   @Column(name = "game_name")
   private String name;
 
-  @ManyToMany(mappedBy = "games")
-  Set<Post> posts;
+  @JsonIgnore
+  @ManyToMany(mappedBy = "games", fetch = FetchType.LAZY)
+  Set<Post> posts = new HashSet<>();
 }

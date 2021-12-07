@@ -17,8 +17,8 @@ public class GameObjectService implements ServiceOf<GameObject> {
   }
 
   @Override
-  public void create(GameObject gameObject) {
-    gameObjectRepository.save(gameObject);
+  public GameObject create(GameObject gameObject) {
+    return gameObjectRepository.save(gameObject);
   }
 
   @Override

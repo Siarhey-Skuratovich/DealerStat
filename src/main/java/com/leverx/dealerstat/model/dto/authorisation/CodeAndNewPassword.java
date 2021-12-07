@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.model.authorisation;
+package com.leverx.dealerstat.model.dto.authorisation;
 
 import lombok.Getter;
 

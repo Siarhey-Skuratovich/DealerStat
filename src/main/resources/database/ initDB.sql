@@ -11,19 +11,6 @@ CREATE TABLE IF NOT EXISTS users
     enabled    BOOLEAN      NOT NULL
 );
 
-DROP TABLE IF EXISTS comments;
-CREATE TABLE IF NOT EXISTS comments
-(
-    comment_id UUID PRIMARY KEY,
-    message    VARCHAR(500) NOT NULL,
-    post_id    UUID         NOT NULL,
-    author_id  UUID         NOT NULL,
-    created_at TIMESTAMP    NOT NULL,
-    approved   BOOLEAN      NOT NULL,
-
-    FOREIGN KEY (post_id) REFERENCES posts (post_id) ON UPDATE CASCADE
-);
-
 DROP TABLE IF EXISTS posts;
 CREATE TABLE IF NOT EXISTS posts
 (
@@ -38,11 +25,24 @@ CREATE TABLE IF NOT EXISTS posts
     FOREIGN KEY (trader_id) REFERENCES users (user_id) ON UPDATE CASCADE
 );
 
+DROP TABLE IF EXISTS comments;
+CREATE TABLE IF NOT EXISTS comments
+(
+    comment_id UUID PRIMARY KEY,
+    message    VARCHAR(500) NOT NULL,
+    post_id    UUID         NOT NULL,
+    author_id  UUID         NOT NULL,
+    created_at TIMESTAMP    NOT NULL,
+    approved   BOOLEAN      NOT NULL,
+
+    FOREIGN KEY (post_id) REFERENCES posts (post_id) ON UPDATE CASCADE
+);
+
 DROP TABLE IF EXISTS games;
 CREATE TABLE IF NOT EXISTS games
 (
     game_id   UUID PRIMARY KEY,
-    game_name VARCHAR(50) NOT NULL
+    game_name VARCHAR(50) NOT NULL UNIQUE
 );
 
 DROP TABLE IF EXISTS posts_games;
@@ -51,8 +51,8 @@ CREATE TABLE IF NOT EXISTS posts_games
     post_id UUID,
     game_id UUID,
     PRIMARY KEY (post_id, game_id),
-    FOREIGN KEY (post_id) REFERENCES posts (post_id) ON UPDATE CASCADE,
-    FOREIGN KEY (game_id) REFERENCES games (game_id) ON UPDATE CASCADE
+    FOREIGN KEY (post_id) REFERENCES posts (post_id),
+    FOREIGN KEY (game_id) REFERENCES games (game_id)
 );
 
 DROP TABLE IF EXISTS game_objects;

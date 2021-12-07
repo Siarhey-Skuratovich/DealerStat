@@ -18,10 +18,10 @@ public class CommentService implements ServiceOf<Comment> {
   }
 
   @Override
-  public void create(Comment comment) {
+  public Comment create(Comment comment) {
     comment.setCreatedAt(LocalDateTime.now());
     comment.setApproved(false);
-    commentRepository.save(comment);
+    return commentRepository.save(comment);
   }
 
   @Override

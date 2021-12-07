@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ServiceOf<T>{
-  void create(T t);
+  T create(T t);
 
   List<T> readAll();
 

@@ -6,6 +6,7 @@ import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,8 +18,12 @@ public class GameService implements ServiceOf<Game> {
   }
 
   @Override
-  public void create(Game game) {
-    gameRepository.save(game);
+  public Game create(Game game) {
+    Optional<Game> existedGame = gameRepository.findByName(game.getName());
+    if (existedGame.isEmpty()) {
+       return gameRepository.save(game);
+    }
+    return existedGame.get();
   }
 
   @Override
@@ -33,7 +38,7 @@ public class GameService implements ServiceOf<Game> {
 
   @Override
   public boolean update(Game game) {
-    if (gameRepository.existsById(game.getGameId())) {
+    if (gameRepository.existsById(game.getGameId()) || gameRepository.findByName(game.getName()).isPresent()) {
       gameRepository.save(game);
       return true;
     }

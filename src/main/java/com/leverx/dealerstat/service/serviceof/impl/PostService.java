@@ -17,8 +17,8 @@ public class PostService implements ServiceOf<Post> {
   }
 
   @Override
-  public void create(Post post) {
-    postRepository.save(post);
+  public Post create(Post post) {
+    return  postRepository.save(post);
   }
 
   @Override
