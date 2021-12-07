@@ -29,7 +29,7 @@ public class Game {
   @Column(name = "game_name")
   private String name;
 
-  @JsonIgnore
+  @JsonIgnoreProperties(value = "games")
   @ManyToMany(mappedBy = "games", fetch = FetchType.LAZY)
   Set<Post> posts = new HashSet<>();
 }

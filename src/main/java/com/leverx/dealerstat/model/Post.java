@@ -52,7 +52,7 @@ public class Post {
 //    comment.setPostId(null);
 //  }
 
-  @JsonIgnore
+  @JsonIgnoreProperties(value = "posts")
   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinTable(
           name = "posts_games",
@@ -61,7 +61,6 @@ public class Post {
   )
   Set<Game> games = new HashSet<>();
 
-  @JsonIgnore
   @ManyToMany
   @JoinTable(
           name = "posts_game_objects",

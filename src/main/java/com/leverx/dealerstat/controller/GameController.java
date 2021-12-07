@@ -41,9 +41,9 @@ public class GameController {
     return new ResponseEntity<>(gameService.readAll(), HttpStatus.OK);
   }
 
-  @GetMapping("/games/{gameId}/posts")
+  /*@GetMapping("/games/{gameId}/posts")
   public ResponseEntity<Set<Post>> getPostsRelatedToTheGame(@PathVariable UUID gameId) {
     Game game = gameService.read(gameId);
     return new ResponseEntity<>(game.getPosts(), HttpStatus.OK);
-  }
+  }*/
 }
