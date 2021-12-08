@@ -74,8 +74,6 @@ public class PostController {
 
   @GetMapping("/articles")
   public ResponseEntity<List<Post>> getAllApprovedPosts() {
-
-
     return new ResponseEntity<>(postService.readAll(), HttpStatus.OK);
   }
 

@@ -44,6 +44,7 @@ public class Post {
   @Column(name = "approved")
   private Boolean approved;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Comment> comments;
 

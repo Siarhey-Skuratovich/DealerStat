@@ -1,8 +1,11 @@
 package com.leverx.dealerstat.service.serviceof.impl;
 
+import com.leverx.dealerstat.config.WebSecurityConfig;
 import com.leverx.dealerstat.model.Comment;
 import com.leverx.dealerstat.repository.postgresql.CommentRepository;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,7 +29,12 @@ public class CommentService implements ServiceOf<Comment> {
 
   @Override
   public List<Comment> readAll() {
-    return commentRepository.findAll();
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication.getName().equals(WebSecurityConfig.ADMIN_USERNAME)) {
+      return commentRepository.findAll();
+    }
+
+    return commentRepository.findByApproved(true);
   }
 
   @Override

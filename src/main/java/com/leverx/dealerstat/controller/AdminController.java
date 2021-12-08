@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.controller;
 
+import com.leverx.dealerstat.model.Comment;
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
@@ -19,11 +20,13 @@ public class AdminController {
   private final ConfirmationCodeService confirmationCodeService;
   private final UserService userService;
   private final ServiceOf<Post> postService;
+  private final ServiceOf<Comment> commentService;
 
-  public AdminController(ConfirmationCodeService confirmationCodeService, UserService userService, ServiceOf<Post> postService) {
+  public AdminController(ConfirmationCodeService confirmationCodeService, UserService userService, ServiceOf<Post> postService, ServiceOf<Comment> commentService) {
     this.confirmationCodeService = confirmationCodeService;
     this.userService = userService;
     this.postService = postService;
+    this.commentService = commentService;
   }
 
   @GetMapping(value = "/codes")
@@ -42,12 +45,17 @@ public class AdminController {
             : new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
-  @GetMapping(value = "/articles")
+  @GetMapping("/articles")
   public ResponseEntity<List<Post>> getAllPosts() {
     return new ResponseEntity<>(postService.readAll(), HttpStatus.OK);
   }
 
-  @PatchMapping("/articles/{postId}")
+  @GetMapping("/comments")
+  public ResponseEntity<List<Comment>> getAllComments() {
+    return new ResponseEntity<>(commentService.readAll(), HttpStatus.OK);
+  }
+
+  @PatchMapping("articles/{postId}")
   public ResponseEntity<?> approvePost(@PathVariable UUID postId) {
     Post post = postService.read(postId);
     if (post == null) {
@@ -56,6 +64,19 @@ public class AdminController {
 
     post.setApproved(true);
     postService.update(post);
+
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PatchMapping("comments/{commentId}")
+  public ResponseEntity<?> approveComment(@PathVariable UUID commentId) {
+    Comment comment = commentService.read(commentId);
+    if (comment == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    comment.setApproved(true);
+    commentService.update(comment);
 
     return new ResponseEntity<>(HttpStatus.OK);
   }

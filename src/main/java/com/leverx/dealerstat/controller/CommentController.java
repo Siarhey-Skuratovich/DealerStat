@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,7 +37,7 @@ public class CommentController {
   @GetMapping(value = "/articles/{postId}/comments")
   public ResponseEntity<Set<Comment>> getCommentsOfPost(@PathVariable UUID postId) {
     Post post = postService.read(postId);
-    
+
     return new ResponseEntity<>(post.getComments(), HttpStatus.OK);
   }
 
@@ -55,7 +53,7 @@ public class CommentController {
   }
 
   @GetMapping("/comments/{commentId}")
-  public ResponseEntity<Comment> getComments(@PathVariable UUID commentId) {
+  public ResponseEntity<Comment> getSpecificComment(@PathVariable UUID commentId) {
     return new ResponseEntity<>(commentService.read(commentId), HttpStatus.OK);
   }
 
@@ -88,7 +86,7 @@ public class CommentController {
   }*/
 
   @GetMapping("/comments")
-  public ResponseEntity<List<Comment>> getComments() {
+  public ResponseEntity<List<Comment>> getApprovedComments() {
     return new ResponseEntity<>(commentService.readAll(), HttpStatus.OK);
   }
 }
