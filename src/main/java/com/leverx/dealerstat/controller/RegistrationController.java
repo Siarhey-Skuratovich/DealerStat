@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -28,7 +29,7 @@ public class RegistrationController {
 
   @SneakyThrows
   @PostMapping(value = "/registration")
-  public ResponseEntity<?> createNewUser(@RequestBody UserEntity userEntity, HttpServletRequest request) {
+  public ResponseEntity<?> createNewUser(@Valid @RequestBody UserEntity userEntity, HttpServletRequest request) {
     if (userService.containsNoSuch(userEntity.getEmail())) {
 
       userService.create(userEntity);

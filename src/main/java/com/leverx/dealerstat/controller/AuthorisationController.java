@@ -3,7 +3,7 @@ package com.leverx.dealerstat.controller;
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.EmailLetter;
 import com.leverx.dealerstat.model.UserEntity;
-import com.leverx.dealerstat.model.dto.authorisation.CodeAndNewPassword;
+import com.leverx.dealerstat.model.dto.authorisation.passwordreset.CodeAndNewPassword;
 import com.leverx.dealerstat.service.EmailLetterService;
 import com.leverx.dealerstat.service.confirmatiocode.ConfirmationCodeService;
 import com.leverx.dealerstat.service.user.UserService;

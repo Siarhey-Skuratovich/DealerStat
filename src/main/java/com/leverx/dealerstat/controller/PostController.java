@@ -4,7 +4,7 @@ import com.leverx.dealerstat.model.Game;
 import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
-import com.leverx.dealerstat.model.dto.PostGameTagsAndGameObjects;
+import com.leverx.dealerstat.model.dto.creation.post.PostGameTagsAndGameObjects;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import org.springframework.http.HttpStatus;

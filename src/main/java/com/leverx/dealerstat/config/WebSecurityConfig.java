@@ -62,7 +62,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .csrf()
             .disable();
-            //.ignoringAntMatchers("/registration", "/auth/**", "/logout");
   }
 
   @Autowired
