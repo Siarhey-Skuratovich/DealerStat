@@ -20,7 +20,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   private final DataSource dataSource;
   private final AuthenticationEntryPointImpl authenticationEntryPoint;
 
-  private static final String ADMIN_USERNAME = "***REMOVED***";
+  public static final String ADMIN_USERNAME = "***REMOVED***";
   private static final String ADMIN_PASSWORD = new BCryptPasswordEncoder().encode("***REMOVED***");
   private static final String ADMIN_ROLE = UserEntity.Role.ADMIN.name();
 

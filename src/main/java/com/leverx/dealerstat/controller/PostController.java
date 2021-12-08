@@ -44,7 +44,6 @@ public class PostController {
       post.getGames().add(gameService.create(game));
     }
 
-
     GameObject[] gameObjects = postGameTagsAndGameObjects.getGameObjects();
 
     for (GameObject gameObject : gameObjects) {
@@ -74,14 +73,16 @@ public class PostController {
   }
 
   @GetMapping("/articles")
-  public ResponseEntity<List<Post>> getAllPosts() {
+  public ResponseEntity<List<Post>> getAllApprovedPosts() {
+
+
     return new ResponseEntity<>(postService.readAll(), HttpStatus.OK);
   }
 
-  @GetMapping("/articles/{postId}")
+  /*@GetMapping("/articles/{postId}")
   public ResponseEntity<Post> getSpecifiedPost(@PathVariable UUID postId) {
     return new ResponseEntity<>(postService.read(postId), HttpStatus.OK);
-  }
+  }*/
 
   @GetMapping(value = "users/{traderId}/articles")
   public ResponseEntity<Set<Post>> getPostsAboutTrader(@PathVariable UUID traderId) {

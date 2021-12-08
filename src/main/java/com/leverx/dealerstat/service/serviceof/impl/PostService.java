@@ -1,8 +1,11 @@
 package com.leverx.dealerstat.service.serviceof.impl;
 
+import com.leverx.dealerstat.config.WebSecurityConfig;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.repository.postgresql.PostRepository;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +26,12 @@ public class PostService implements ServiceOf<Post> {
 
   @Override
   public List<Post> readAll() {
-    return postRepository.findAll();
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication.getName().equals(WebSecurityConfig.ADMIN_USERNAME)) {
+      return postRepository.findAll();
+    } else {
+      return postRepository.findByApproved(true);
+    }
   }
 
   @Override

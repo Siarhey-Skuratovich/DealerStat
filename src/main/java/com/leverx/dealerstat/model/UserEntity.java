@@ -1,12 +1,12 @@
 package com.leverx.dealerstat.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -48,6 +48,7 @@ public class UserEntity {
   @Column(name = "enabled")
   private Boolean enabled;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "traderId")
   private Set<Post> posts;
 

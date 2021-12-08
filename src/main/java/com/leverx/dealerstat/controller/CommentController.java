@@ -39,6 +39,7 @@ public class CommentController {
   @GetMapping(value = "/articles/{postId}/comments")
   public ResponseEntity<Set<Comment>> getCommentsOfPost(@PathVariable UUID postId) {
     Post post = postService.read(postId);
+    
     return new ResponseEntity<>(post.getComments(), HttpStatus.OK);
   }
 
