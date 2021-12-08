@@ -1,14 +1,12 @@
 package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.model.Game;
-import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @RestController

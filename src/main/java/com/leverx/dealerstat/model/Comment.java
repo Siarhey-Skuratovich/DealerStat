@@ -1,17 +1,17 @@
 package com.leverx.dealerstat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
 @Entity
-@NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "comments")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Comment {

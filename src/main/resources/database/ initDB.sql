@@ -59,7 +59,6 @@ DROP TABLE IF EXISTS game_objects;
 CREATE TABLE IF NOT EXISTS game_objects
 (
     game_object_id UUID PRIMARY KEY,
-    game_name      VARCHAR(50)  NOT NULL,
     title          VARCHAR(50)  NOT NULL,
     text           VARCHAR(200) NOT NULL,
     status         VARCHAR(9)   NOT NULL,

@@ -1,9 +1,8 @@
 package com.leverx.dealerstat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,13 +11,12 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class UserEntity implements Serializable {
+public class UserEntity {
   @Id
   @Column(name = "user_id")
   @GeneratedValue(generator = "UUID")

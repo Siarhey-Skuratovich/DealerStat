@@ -1,9 +1,10 @@
 package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.model.Game;
+import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
-import com.leverx.dealerstat.model.dto.PostAndGames;
+import com.leverx.dealerstat.model.dto.PostGameTagsAndGameObjects;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -21,35 +22,53 @@ public class PostController {
   private final ServiceOf<Post> postService;
   private final UserService userService;
   private final ServiceOf<Game> gameService;
+  private final ServiceOf<GameObject> gameObjectService;
 
-  public PostController(ServiceOf<Post> postService, UserService userService, ServiceOf<Game> gameService) {
+  public PostController(ServiceOf<Post> postService, UserService userService, ServiceOf<Game> gameService, ServiceOf<GameObject> gameObjectService) {
     this.postService = postService;
     this.userService = userService;
     this.gameService = gameService;
+    this.gameObjectService = gameObjectService;
   }
 
   @PostMapping(value = "/articles")
-  public ResponseEntity<?> createPost(@RequestBody PostAndGames postAndGames, Principal principal) {
-    Post post = postAndGames.getPost();
+  public ResponseEntity<?> createPost(@RequestBody PostGameTagsAndGameObjects postGameTagsAndGameObjects, Principal principal) {
+    Post post = postGameTagsAndGameObjects.getPost();
     UserEntity author = userService.read(principal.getName());
     post.setAuthorId(author.getUserId());
     post.setApproved(false);
 
-    Game[] games = postAndGames.getGames();
-
-//    Session session = HibernateUtil.getSessionFactory().openSession();
-//    session.beginTransaction();
+    Game[] games = postGameTagsAndGameObjects.getGames();
 
     for (Game game : games) {
       post.getGames().add(gameService.create(game));
     }
 
+
+    GameObject[] gameObjects = postGameTagsAndGameObjects.getGameObjects();
+
+    for (GameObject gameObject : gameObjects) {
+      gameObject.setAuthorId(author.getUserId());
+      post.getGameObjects().add(gameObjectService.create(gameObject));
+    }
+
     postService.create(post);
 
-//    session.persist(post);
-//
-//    session.flush();
-//    session.getTransaction().commit();
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PatchMapping("/articles/{postId}")
+  public ResponseEntity<?> addGameObjectsToThePost(@PathVariable UUID postId, @RequestBody GameObject[] gameObjects) {
+    Post post = postService.read(postId);
+    if (post == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    for (GameObject gameObject : gameObjects) {
+      post.getGameObjects().add(gameObject);
+    }
+
+    postService.update(post);
 
     return new ResponseEntity<>(HttpStatus.OK);
   }
@@ -75,4 +94,13 @@ public class PostController {
     Post post = postService.read(postId);
     return new ResponseEntity<>(post.getGames(), HttpStatus.OK);
   }*/
+
+  @GetMapping(value = "/my")
+  public ResponseEntity<Set<Post>> getMyPosts(Principal principal) {
+    UserEntity user = userService.read(principal.getName());
+    return new ResponseEntity<>(user.getPosts(), HttpStatus.OK);
+  }
+
+
+
 }

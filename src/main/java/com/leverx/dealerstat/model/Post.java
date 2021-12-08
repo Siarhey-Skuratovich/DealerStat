@@ -1,6 +1,6 @@
 package com.leverx.dealerstat.model;
 
-import com.fasterxml.jackson.annotation.*;;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -47,12 +47,7 @@ public class Post {
   @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Comment> comments;
 
-  //  public void removeComment(Comment comment) {
-//    comments.remove(comment);
-//    comment.setPostId(null);
-//  }
-
-  @JsonIgnoreProperties(value = "posts")
+  @JsonIgnoreProperties({"posts", "gameObjects"})
   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinTable(
           name = "posts_games",
@@ -61,7 +56,8 @@ public class Post {
   )
   Set<Game> games = new HashSet<>();
 
-  @ManyToMany
+  @JsonIgnoreProperties(value = "posts")
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinTable(
           name = "posts_game_objects",
           joinColumns = @JoinColumn(name = "post_id"),

@@ -2,7 +2,6 @@ package com.leverx.dealerstat.model;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,6 +29,10 @@ public class Game {
   private String name;
 
   @JsonIgnoreProperties(value = "games")
-  @ManyToMany(mappedBy = "games", fetch = FetchType.LAZY)
+  @ManyToMany(mappedBy = "games", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   Set<Post> posts = new HashSet<>();
+
+  @JsonIgnoreProperties(value = "posts")
+  @OneToMany(mappedBy = "gameId", cascade = CascadeType.ALL, orphanRemoval = true)
+  Set<GameObject> gameObjects = new HashSet<>();
 }

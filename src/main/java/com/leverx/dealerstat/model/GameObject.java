@@ -1,8 +1,8 @@
 package com.leverx.dealerstat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
 @Entity
-@NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "game_objects")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class GameObject {
@@ -45,9 +45,11 @@ public class GameObject {
   private LocalDateTime updatedAt;
 
   @Column(name = "game_id")
+  @JoinColumn(name="game_object_id", nullable=false)
   private UUID gameId;
 
-  @ManyToMany(mappedBy = "gameObjects")
+  @JsonIgnoreProperties(value = "gameObjects")
+  @ManyToMany(mappedBy = "gameObjects", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   Set<Post> posts;
 
   public enum Status {

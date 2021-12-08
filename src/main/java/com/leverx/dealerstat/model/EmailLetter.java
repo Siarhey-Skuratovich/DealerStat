@@ -3,11 +3,9 @@ package com.leverx.dealerstat.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Getter
 @NoArgsConstructor
-public class EmailLetter implements Serializable {
+public class EmailLetter {
 
   private final String fromAddress = "***REMOVED***";
   private final String senderName = "Dealer Stat";

@@ -5,6 +5,7 @@ import com.leverx.dealerstat.repository.postgresql.GameObjectRepository;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +19,9 @@ public class GameObjectService implements ServiceOf<GameObject> {
 
   @Override
   public GameObject create(GameObject gameObject) {
+    gameObject.setStatus(GameObject.Status.AVAILABLE);
+    gameObject.setCreatedAt(LocalDateTime.now());
+    gameObject.setUpdatedAt(LocalDateTime.now());
     return gameObjectRepository.save(gameObject);
   }
 
