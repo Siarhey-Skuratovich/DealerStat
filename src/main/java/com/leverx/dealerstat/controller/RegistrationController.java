@@ -3,19 +3,22 @@ package com.leverx.dealerstat.controller;
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.EmailLetter;
 import com.leverx.dealerstat.model.UserEntity;
-import com.leverx.dealerstat.service.EmailLetterService;
+import com.leverx.dealerstat.service.email.EmailLetterService;
 import com.leverx.dealerstat.service.confirmatiocode.ConfirmationCodeService;
 import com.leverx.dealerstat.service.user.UserService;
+import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
+@Validated
 public class RegistrationController {
   private final ConfirmationCodeService confirmationCodeService;
   private final UserService userService;
@@ -29,15 +32,17 @@ public class RegistrationController {
 
   @SneakyThrows
   @PostMapping(value = "/registration")
-  public ResponseEntity<?> createNewUser(@Valid @RequestBody UserEntity userEntity, HttpServletRequest request) {
-    if (userService.containsNoSuch(userEntity.getEmail())) {
+  @Transactional
+  public ResponseEntity<?> createNewUser(@Validated(InfoUserShouldPass.class) @RequestBody UserEntity userEntity,
+                                         HttpServletRequest request) {
+    if (userService.containsNoSuchEmail(userEntity.getEmail())) {
 
       userService.create(userEntity);
 
       ConfirmationUserCode ConfirmationUserCode = confirmationCodeService.createConfirmationCodeFor(userEntity);
 
       EmailLetter registrationConfirmationLetter = new EmailLetter(userEntity.getEmail());
-      registrationConfirmationLetter.makeRegistrationLetter(userEntity.getFirstName(), ConfirmationUserCode, getAppURL(request));
+      registrationConfirmationLetter.compileRegistrationLetter(userEntity.getFirstName(), ConfirmationUserCode, getAppURL(request));
 
       emailLetterService.sendLetter(registrationConfirmationLetter);
 

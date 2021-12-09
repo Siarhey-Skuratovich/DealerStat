@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,16 +26,20 @@ public class Comment {
   )
   private UUID commentId;
 
+  @NotBlank(message = "message cannot be null, empty, blank")
   @Column(name = "message")
   private String message;
 
+  @NotNull(message = "postId cannot be null")
   @Column(name = "post_id")
-  @JoinColumn(name="comment_id", nullable=false)
+  @JoinColumn(name="comment_id")
   private UUID postId;
 
+  @NotNull(message = "authorId cannot be null")
   @Column(name = "author_id")
   private UUID authorId;
 
+  @NotNull(message = "createdAt cannot be null")
   @Column(name = "created_at")
   private LocalDateTime createdAt;
 

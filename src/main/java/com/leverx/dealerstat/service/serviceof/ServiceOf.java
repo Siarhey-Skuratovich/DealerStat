@@ -13,4 +13,6 @@ public interface ServiceOf<T>{
   boolean update(T t);
 
   boolean delete(UUID id);
+
+  boolean notContainsById(UUID id);
 }

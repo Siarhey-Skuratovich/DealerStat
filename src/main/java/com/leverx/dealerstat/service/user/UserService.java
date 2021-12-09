@@ -22,5 +22,7 @@ public interface UserService {
 
   boolean confirmUserBy(ConfirmationUserCode existedCode);
 
-  boolean containsNoSuch(String email);
+  boolean containsNoSuchEmail(String email);
+
+  boolean noUserById(UUID id);
 }

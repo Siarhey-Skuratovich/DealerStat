@@ -2,8 +2,10 @@ package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.model.Game;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
+import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +20,16 @@ public class GameController {
   }
 
   @PostMapping(value = "/games")
-  public ResponseEntity<?> createGame(@RequestBody Game game) {
+  public ResponseEntity<?> createGame(@Validated(InfoUserShouldPass.class) @RequestBody Game game) {
     gameService.create(game);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @PutMapping(value = " /games/{gameId}")
-  public ResponseEntity<?> updateGame(@PathVariable UUID gameId, @RequestBody Game updatedGame) {
+  public ResponseEntity<?> updateGame(
+          @Validated(InfoUserShouldPass.class)
+          @PathVariable UUID gameId,
+          @RequestBody Game updatedGame) {
 
     updatedGame.setGameId(gameId);
 

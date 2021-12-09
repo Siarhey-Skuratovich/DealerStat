@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService {
     userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
     userEntity.setCreatedAt(LocalDateTime.now());
     userEntity.setEnabled(false);
+
+    if (userEntity.getRole().equals(UserEntity.Role.ADMIN)) {
+      userEntity.setRole(null);
+    }
+
     userRepository.save(userEntity);
   }
 
@@ -70,7 +75,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean containsNoSuch(String email) {
+  public boolean containsNoSuchEmail(String email) {
     return userRepository.findByEmail(email) == null;
+  }
+
+  @Override
+  public boolean noUserById(UUID id) {
+    return !userRepository.existsById(id);
   }
 }

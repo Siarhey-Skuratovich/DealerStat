@@ -5,11 +5,12 @@ import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
+import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,11 +27,13 @@ public class CommentController {
   }
 
   @PostMapping(value = "/articles/{postId}/comments")
-  public ResponseEntity<?> addComment(@RequestBody Comment comment, @PathVariable UUID postId, Principal principal) {
-    UserEntity author = userService.read(principal.getName());
-    comment.setAuthorId(author.getUserId());
+  public ResponseEntity<?> addComment(@Validated(InfoUserShouldPass.class)
+                                        @RequestBody Comment comment,
+                                      @PathVariable UUID postId) {
     comment.setPostId(postId);
+
     commentService.create(comment);
+
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
@@ -43,35 +46,53 @@ public class CommentController {
 
   @GetMapping(value = "/users/{traderId}/comments")
   public ResponseEntity<Set<Comment>> getAllCommentsRelatedToTheTrader(@PathVariable UUID traderId) {
+    if (userService.noUserById(traderId)) {
+      return ResponseEntity.notFound().build();
+    }
+
     UserEntity trader = userService.read(traderId);
+
     Set<Post> postsRelatedToTheTrader = trader.getPosts();
+
     Set<Comment> comments = postsRelatedToTheTrader.stream()
             .map(Post::getComments)
             .flatMap(Collection::parallelStream)
             .collect(Collectors.toSet());
+
     return new ResponseEntity<>(comments, HttpStatus.OK);
   }
 
   @GetMapping("/comments/{commentId}")
   public ResponseEntity<Comment> getSpecificComment(@PathVariable UUID commentId) {
+    if (commentService.notContainsById(commentId)) {
+      return ResponseEntity.notFound().build();
+    }
     return new ResponseEntity<>(commentService.read(commentId), HttpStatus.OK);
   }
 
   @DeleteMapping("comments/{commentId}")
   public ResponseEntity<Comment> deleteComment(@PathVariable UUID commentId) {
-    commentService.delete(commentId);
-    return new ResponseEntity<>(HttpStatus.OK);
+    if (commentService.delete(commentId)) {
+      return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    return ResponseEntity.notFound().build();
   }
 
   @PutMapping ("/comments")
-  public ResponseEntity<Comment> updateComment(@RequestBody Comment updatedComment) {
-    if (    commentService.update(updatedComment)) {
+  public ResponseEntity<Comment> updateComment(@Validated(InfoUserShouldPass.class) @RequestBody Comment updatedComment) {
+    if (commentService.update(updatedComment)) {
       return new ResponseEntity<>(HttpStatus.OK);
     }
     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
-  /*@GetMapping(value = "/users/{traderId}/comments/{commentId}")
+  @GetMapping("/comments")
+  public ResponseEntity<List<Comment>> getApprovedComments() {
+    return new ResponseEntity<>(commentService.readAll(), HttpStatus.OK);
+  }
+
+    /*@GetMapping(value = "/users/{traderId}/comments/{commentId}")
   public ResponseEntity<Comment> getSpecificCommentRelatedToTheTrader(@PathVariable UUID traderId, @PathVariable UUID commentId) {
     UserEntity trader = userService.read(traderId);
     Set<Post> postsRelatedToTheTrader = trader.getPosts();
@@ -84,10 +105,5 @@ public class CommentController {
             .map(comment -> new ResponseEntity<>(comment, HttpStatus.OK))
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }*/
-
-  @GetMapping("/comments")
-  public ResponseEntity<List<Comment>> getApprovedComments() {
-    return new ResponseEntity<>(commentService.readAll(), HttpStatus.OK);
-  }
 }
 

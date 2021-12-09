@@ -4,7 +4,7 @@ import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.EmailLetter;
 import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.model.dto.authorisation.passwordreset.CodeAndNewPassword;
-import com.leverx.dealerstat.service.EmailLetterService;
+import com.leverx.dealerstat.service.email.EmailLetterService;
 import com.leverx.dealerstat.service.confirmatiocode.ConfirmationCodeService;
 import com.leverx.dealerstat.service.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -45,18 +45,22 @@ public class AuthorisationController {
   }
 
   @PostMapping(value = "/auth/forgot_password")
-  public ResponseEntity<?> sendCodeToEmailIfForgotPassword(@RequestBody EmailLetter resetPasswordLetter)
+  public ResponseEntity<?> sendCodeToEmailIfForgotPassword(@RequestBody String email)
           throws MessagingException, UnsupportedEncodingException, InstantiationException {
 
-    UserEntity userEntity = userService.read(resetPasswordLetter.getDestinationEmail());
-    if (userEntity == null) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    if (userService.containsNoSuchEmail(email)) {
+      return ResponseEntity.notFound().build();
     }
+
+    UserEntity userEntity = userService.read(email);
+
     deleteIfAlreadyContainsCodeFor(userEntity);
+
+    EmailLetter resetPasswordLetter = new EmailLetter(email);
 
     ConfirmationUserCode confirmationUserCode = confirmationCodeService.createConfirmationCodeFor(userEntity);
 
-    resetPasswordLetter.makeResetPasswordLetter(userEntity.getFirstName(), confirmationUserCode);
+    resetPasswordLetter.compileResetPasswordLetter(userEntity.getFirstName(), confirmationUserCode);
     emailLetterService.sendLetter(resetPasswordLetter);
 
     return new ResponseEntity<>(HttpStatus.OK);

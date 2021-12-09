@@ -3,12 +3,16 @@ package com.leverx.dealerstat.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @NoArgsConstructor
 public class EmailLetter {
 
   private final String fromAddress = "***REMOVED***";
   private final String senderName = "Dealer Stat";
+
   private String destinationEmail;
   private String subject;
   private String content;
@@ -17,7 +21,7 @@ public class EmailLetter {
     this.destinationEmail = destinationEmail;
   }
 
-  public void makeRegistrationLetter(String firstName, ConfirmationUserCode code, String appURL) {
+  public void compileRegistrationLetter(String firstName, ConfirmationUserCode code, String appURL) {
     subject = "Please confirm your registration";
     content = "Dear [[name]],<br>"
             + "Please click the link below to confirm your registration:<br>"
@@ -30,7 +34,7 @@ public class EmailLetter {
     content = content.replace("[[URL]]", verifyURL);
   }
 
-  public void makeResetPasswordLetter(String firstName, ConfirmationUserCode code) {
+  public void compileResetPasswordLetter(String firstName, ConfirmationUserCode code) {
     subject = "Code to reset password";
     content = "Dear [[name]],<br>"
             + "Here is the code to confirm your intention to reset password:<br>"

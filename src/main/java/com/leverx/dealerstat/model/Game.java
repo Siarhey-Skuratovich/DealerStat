@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class Game {
   )
   private UUID gameId;
 
+  @NotBlank(message = "name cannot be null, empty, blank")
   @Column(name = "game_name")
   private String name;
 

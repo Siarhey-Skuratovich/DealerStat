@@ -4,8 +4,10 @@ import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
+import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -23,15 +25,18 @@ public class GameObjectController {
   }
 
   @PostMapping(value = "/objects")
-  public ResponseEntity<?> createGameObject(@RequestBody GameObject gameObject, Principal principal) {
-    UserEntity author = userService.read(principal.getName());
-    gameObject.setAuthorId(author.getUserId());
+  public ResponseEntity<?> createGameObject(@Validated(InfoUserShouldPass.class) @RequestBody GameObject gameObject) {
+
     gameObjectService.create(gameObject);
+
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @PutMapping(value = "/objects/{gameObjectId}")
-  public ResponseEntity<?> updateGameObject(@PathVariable UUID gameObjectId, @RequestBody GameObject updatedGameObject) {
+  public ResponseEntity<?> updateGameObject(
+          @PathVariable UUID gameObjectId,
+          @Validated(InfoUserShouldPass.class)
+          @RequestBody GameObject updatedGameObject) {
 
     updatedGameObject.setGameObjectId(gameObjectId);
 
@@ -52,12 +57,14 @@ public class GameObjectController {
     GameObject gameObject = gameObjectService.read(gameObjectId);
 
     if (gameObject.getAuthorId().equals(currentUser.getUserId())) {
-      if (gameObjectService.delete(gameObjectId)) {
-        return new ResponseEntity<>(HttpStatus.OK);
-      }
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } else {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
+
+    if (gameObjectService.delete(gameObjectId)) {
+      return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
   }
 }

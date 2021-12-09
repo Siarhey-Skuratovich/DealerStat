@@ -4,12 +4,11 @@ import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
 @RedisHash(value = "Code", timeToLive = 86400)
-public class ConfirmationUserCode implements Serializable {
+public class ConfirmationUserCode {
   @Id
   private int codeId;
   private UUID userId;

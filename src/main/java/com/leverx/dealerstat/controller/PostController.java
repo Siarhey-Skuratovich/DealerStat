@@ -1,14 +1,18 @@
 package com.leverx.dealerstat.controller;
 
-import com.leverx.dealerstat.model.Game;
+import com.leverx.dealerstat.config.HibernateUtil;
+import com.leverx.dealerstat.mapping.PostMappingService;
 import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
-import com.leverx.dealerstat.model.dto.creation.post.PostGameTagsAndGameObjects;
+import com.leverx.dealerstat.model.dto.creation.post.PostDto;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
+import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
+import org.hibernate.Session;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -21,35 +25,17 @@ import java.util.UUID;
 public class PostController {
   private final ServiceOf<Post> postService;
   private final UserService userService;
-  private final ServiceOf<Game> gameService;
-  private final ServiceOf<GameObject> gameObjectService;
+  private final PostMappingService postMappingService;
 
-  public PostController(ServiceOf<Post> postService, UserService userService, ServiceOf<Game> gameService, ServiceOf<GameObject> gameObjectService) {
+  public PostController(ServiceOf<Post> postService, UserService userService, PostMappingService postMappingService) {
     this.postService = postService;
     this.userService = userService;
-    this.gameService = gameService;
-    this.gameObjectService = gameObjectService;
+    this.postMappingService = postMappingService;
   }
 
   @PostMapping(value = "/articles")
-  public ResponseEntity<?> createPost(@RequestBody PostGameTagsAndGameObjects postGameTagsAndGameObjects, Principal principal) {
-    Post post = postGameTagsAndGameObjects.getPost();
-    UserEntity author = userService.read(principal.getName());
-    post.setAuthorId(author.getUserId());
-    post.setApproved(false);
-
-    Game[] games = postGameTagsAndGameObjects.getGames();
-
-    for (Game game : games) {
-      post.getGames().add(gameService.create(game));
-    }
-
-    GameObject[] gameObjects = postGameTagsAndGameObjects.getGameObjects();
-
-    for (GameObject gameObject : gameObjects) {
-      gameObject.setAuthorId(author.getUserId());
-      post.getGameObjects().add(gameObjectService.create(gameObject));
-    }
+  public ResponseEntity<?> createPost(@Validated(InfoUserShouldPass.class) @RequestBody PostDto postDto) {
+    Post post = postMappingService.mapFromDtoToPostEntity(postDto);
 
     postService.create(post);
 
@@ -57,15 +43,17 @@ public class PostController {
   }
 
   @PatchMapping("/articles/{postId}")
-  public ResponseEntity<?> addGameObjectsToThePost(@PathVariable UUID postId, @RequestBody GameObject[] gameObjects) {
-    Post post = postService.read(postId);
+  public ResponseEntity<?> addGameObjectToThePost(@PathVariable UUID postId,
+                                                  @Validated(InfoUserShouldPass.class) @RequestBody GameObject gameObject) {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Post post = session.get(Post.class, postId);
+    session.close();
+
     if (post == null) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    for (GameObject gameObject : gameObjects) {
-      post.getGameObjects().add(gameObject);
-    }
+    post.addGameObject(gameObject);
 
     postService.update(post);
 
@@ -77,22 +65,16 @@ public class PostController {
     return new ResponseEntity<>(postService.readAll(), HttpStatus.OK);
   }
 
-  /*@GetMapping("/articles/{postId}")
-  public ResponseEntity<Post> getSpecifiedPost(@PathVariable UUID postId) {
-    return new ResponseEntity<>(postService.read(postId), HttpStatus.OK);
-  }*/
-
   @GetMapping(value = "users/{traderId}/articles")
   public ResponseEntity<Set<Post>> getPostsAboutTrader(@PathVariable UUID traderId) {
+
+    if (userService.noUserById(traderId)) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     UserEntity trader = userService.read(traderId);
     return new ResponseEntity<>(trader.getPosts(), HttpStatus.OK);
   }
-
-  /*@GetMapping("/articles/{postId}/games")
-  public ResponseEntity<Set<Game>> getGamesRelatedToThePost(@PathVariable UUID postId) {
-    Post post = postService.read(postId);
-    return new ResponseEntity<>(post.getGames(), HttpStatus.OK);
-  }*/
 
   @GetMapping(value = "/my")
   public ResponseEntity<Set<Post>> getMyPosts(Principal principal) {
@@ -100,6 +82,14 @@ public class PostController {
     return new ResponseEntity<>(user.getPosts(), HttpStatus.OK);
   }
 
+  /*@GetMapping("/articles/{postId}")
+  public ResponseEntity<Post> getSpecifiedPost(@PathVariable UUID postId) {
+    return new ResponseEntity<>(postService.read(postId), HttpStatus.OK);
+  }*/
 
-
+    /*@GetMapping("/articles/{postId}/games")
+  public ResponseEntity<Set<Game>> getGamesRelatedToThePost(@PathVariable UUID postId) {
+    Post post = postService.read(postId);
+    return new ResponseEntity<>(post.getGames(), HttpStatus.OK);
+  }*/
 }

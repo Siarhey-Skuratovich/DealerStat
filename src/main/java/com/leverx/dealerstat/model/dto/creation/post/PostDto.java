@@ -5,9 +5,16 @@ import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.Post;
 import lombok.Getter;
 
+import javax.validation.Valid;
+
 @Getter
-public class PostGameTagsAndGameObjects {
+public class PostDto {
+  @Valid
   private Post post;
+
+  @Valid
   private Game[] games;
+
+  @Valid
   private GameObject[] gameObjects;
 }

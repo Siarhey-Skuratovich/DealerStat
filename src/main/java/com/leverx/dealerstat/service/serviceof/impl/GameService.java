@@ -53,4 +53,9 @@ public class GameService implements ServiceOf<Game> {
     }
     return false;
   }
+
+  @Override
+  public boolean notContainsById(UUID id) {
+    return !gameRepository.existsById(id);
+  }
 }

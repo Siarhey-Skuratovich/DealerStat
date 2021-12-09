@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.service;
+package com.leverx.dealerstat.service.email;
 
 import com.leverx.dealerstat.model.EmailLetter;
 import org.springframework.mail.javamail.JavaMailSender;
