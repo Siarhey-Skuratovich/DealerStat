@@ -24,6 +24,4 @@ public interface UserService {
   boolean confirmUserBy(ConfirmationUserCode existedCode);
 
   boolean existsByEmail(String email);
-
-  boolean noUserById(UUID id);
 }

@@ -26,15 +26,23 @@ public class PostController {
   private final ServiceOf<Post> postService;
   private final UserService userService;
   private final PostMappingService postMappingService;
+  private final ServiceOf<GameObject> gameObjectService;
 
-  public PostController(ServiceOf<Post> postService, UserService userService, PostMappingService postMappingService) {
+  public PostController(ServiceOf<Post> postService, UserService userService, PostMappingService postMappingService, ServiceOf<GameObject> gameObjectService) {
     this.postService = postService;
     this.userService = userService;
     this.postMappingService = postMappingService;
+    this.gameObjectService = gameObjectService;
   }
 
   @PostMapping(value = "/articles")
   public ResponseEntity<?> createPost(@Validated(InfoUserShouldPass.class) @RequestBody PostDto postDto) {
+
+    Optional<UserEntity> optionalRelatedTrader = userService.read(postDto.getPost().getTraderId());
+    if (optionalRelatedTrader.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+
     Post post = postMappingService.mapFromDtoToPostEntity(postDto);
 
     postService.create(post);
@@ -51,6 +59,11 @@ public class PostController {
     if (postOptional.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    if (gameObject.getGameObjectId() == null) {
+      gameObject = gameObjectService.create(gameObject);
+    }
+
 
     Post post = postOptional.get();
     post.addGameObject(gameObject);

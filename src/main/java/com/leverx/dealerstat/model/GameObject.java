@@ -37,7 +37,7 @@ public class GameObject {
   @Column(name = "text")
   private String text;
 
-  @NotNull(message = "status cannot be null", groups = InfoUserShouldPass.class)
+  @NotNull(message = "status cannot be null", groups = AdvancedInfo.class)
   @Column(name = "status")
   @Enumerated(EnumType.STRING)
   private Status status;

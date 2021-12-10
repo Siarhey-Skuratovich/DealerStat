@@ -1,8 +1,10 @@
 package com.leverx.dealerstat.controller;
 
+import com.leverx.dealerstat.authorization.CommentAuthorization;
 import com.leverx.dealerstat.model.Comment;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
+import com.leverx.dealerstat.model.dto.updation.comment.UpdatedCommentMessageDto;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
@@ -11,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,22 +23,29 @@ public class CommentController {
   private final ServiceOf<Comment> commentService;
   private final ServiceOf<Post> postService;
   private final UserService userService;
+  private final CommentAuthorization commentAuthorization;
 
-  public CommentController(ServiceOf<Comment> commentService, ServiceOf<Post> postService, UserService userService) {
+  public CommentController(ServiceOf<Comment> commentService, ServiceOf<Post> postService, UserService userService, CommentAuthorization commentAuthorization) {
     this.commentService = commentService;
     this.postService = postService;
     this.userService = userService;
+    this.commentAuthorization = commentAuthorization;
   }
 
   @PostMapping(value = "/articles/{postId}/comments")
   public ResponseEntity<?> addComment(@Validated(InfoUserShouldPass.class)
-                                        @RequestBody Comment comment,
+                                      @RequestBody Comment comment,
                                       @PathVariable UUID postId) {
+    Optional<Post> existedPost = postService.read(postId);
+    if (existedPost.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+
     comment.setPostId(postId);
 
     commentService.create(comment);
 
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping(value = "/articles/{postId}/comments")
@@ -84,20 +95,41 @@ public class CommentController {
   }
 
   @DeleteMapping("comments/{commentId}")
-  public ResponseEntity<Comment> deleteComment(@PathVariable UUID commentId) {
-    if (commentService.delete(commentId)) {
-      return new ResponseEntity<>(HttpStatus.OK);
+  public ResponseEntity<Comment> deleteComment(@PathVariable UUID commentId, Principal principal) {
+
+    Optional<Comment> commentOptional = commentService.read(commentId);
+    if (commentOptional.isEmpty()) {
+      return ResponseEntity.notFound().build();
     }
 
-    return ResponseEntity.notFound().build();
+    if (commentAuthorization.hasAuthority(principal, commentOptional.get())) {
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    commentService.delete(commentId);
+
+    return ResponseEntity.ok().build();
   }
 
-  @PutMapping ("/comments")
-  public ResponseEntity<Comment> updateComment(@Validated(InfoUserShouldPass.class) @RequestBody Comment updatedComment) {
-    if (commentService.update(updatedComment)) {
-      return new ResponseEntity<>(HttpStatus.OK);
+  @PutMapping("/comments/{commentId}")
+  public ResponseEntity<Comment> updateComment(@PathVariable UUID commentId,
+                                               @Valid
+                                               @RequestBody UpdatedCommentMessageDto updatedCommentMessageDto, Principal principal) {
+    Optional<Comment> commentOptional = commentService.read(commentId);
+    if (commentOptional.isEmpty()) {
+      return ResponseEntity.notFound().build();
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    if (commentAuthorization.hasAuthority(principal, commentOptional.get())) {
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    Comment commentToUpdate = commentOptional.get();
+    commentToUpdate.setMessage(updatedCommentMessageDto.getMessage());
+
+    commentService.update(commentToUpdate);
+
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @GetMapping("/comments")

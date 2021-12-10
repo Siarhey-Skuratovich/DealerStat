@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.controller;
 
+import com.leverx.dealerstat.model.Game;
 import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
@@ -19,14 +20,21 @@ import java.util.UUID;
 public class GameObjectController {
   private final ServiceOf<GameObject> gameObjectService;
   private final UserService userService;
+  private final ServiceOf<Game> gameService;
 
-  public GameObjectController(ServiceOf<GameObject> gameObjectService, UserService userService) {
+  public GameObjectController(ServiceOf<GameObject> gameObjectService, UserService userService, ServiceOf<Game> gameService) {
     this.gameObjectService = gameObjectService;
     this.userService = userService;
+    this.gameService = gameService;
   }
 
   @PostMapping(value = "/objects")
   public ResponseEntity<?> createGameObject(@Validated(InfoUserShouldPass.class) @RequestBody GameObject gameObject) {
+
+    Optional<Game> gameOptional = gameService.read(gameObject.getGameId());
+    if (gameOptional.isEmpty()) {
+      return ResponseEntity.badRequest().build();
+    }
 
     gameObjectService.create(gameObject);
 
@@ -38,6 +46,7 @@ public class GameObjectController {
           @PathVariable UUID gameObjectId,
           @Validated(InfoUserShouldPass.class)
           @RequestBody GameObject updatedGameObject) {
+
 
     updatedGameObject.setGameObjectId(gameObjectId);
 
