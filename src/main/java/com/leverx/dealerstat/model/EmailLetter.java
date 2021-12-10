@@ -3,9 +3,6 @@ package com.leverx.dealerstat.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
 @Getter
 @NoArgsConstructor
 public class EmailLetter {
@@ -30,7 +27,7 @@ public class EmailLetter {
             + "Dealer Stat.";
 
     content = content.replace("[[name]]", firstName);
-    String verifyURL = appURL + "/auth/confirm/" + code.getCodeId();
+    String verifyURL = appURL + "/auth/confirm/" + code.getCode();
     content = content.replace("[[URL]]", verifyURL);
   }
 
@@ -41,6 +38,6 @@ public class EmailLetter {
             + "<h3>[[code]]</h3>"
             + "Dealer Stat.";
     content = content.replace("[[name]]", firstName);
-    content = content.replace("[[code]]", String.valueOf(code.getCodeId()));
+    content = content.replace("[[code]]", String.valueOf(code.getCode()));
   }
 }

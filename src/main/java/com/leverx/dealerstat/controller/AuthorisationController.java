@@ -3,7 +3,8 @@ package com.leverx.dealerstat.controller;
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.EmailLetter;
 import com.leverx.dealerstat.model.UserEntity;
-import com.leverx.dealerstat.model.dto.authorisation.passwordreset.CodeAndNewPassword;
+import com.leverx.dealerstat.model.dto.authorisation.passwordreset.CodeAndNewPasswordDto;
+import com.leverx.dealerstat.model.dto.authorisation.passwordreset.EmailDto;
 import com.leverx.dealerstat.service.email.EmailLetterService;
 import com.leverx.dealerstat.service.confirmatiocode.ConfirmationCodeService;
 import com.leverx.dealerstat.service.user.UserService;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
+import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -45,18 +46,16 @@ public class AuthorisationController {
   }
 
   @PostMapping(value = "/auth/forgot_password")
-  public ResponseEntity<?> sendCodeToEmailIfForgotPassword(@RequestBody String email)
+  public ResponseEntity<?> sendCodeToEmailIfForgotPassword(@Valid @RequestBody EmailDto emailDto)
           throws MessagingException, UnsupportedEncodingException, InstantiationException {
 
-    if (userService.containsNoSuchEmail(email)) {
+    if (!userService.existsByEmail(emailDto.getEmail())) {
       return ResponseEntity.notFound().build();
     }
 
-    UserEntity userEntity = userService.read(email);
+    UserEntity userEntity = userService.read(emailDto.getEmail());
 
-    deleteIfAlreadyContainsCodeFor(userEntity);
-
-    EmailLetter resetPasswordLetter = new EmailLetter(email);
+    EmailLetter resetPasswordLetter = new EmailLetter(emailDto.getEmail());
 
     ConfirmationUserCode confirmationUserCode = confirmationCodeService.createConfirmationCodeFor(userEntity);
 
@@ -67,16 +66,16 @@ public class AuthorisationController {
   }
 
   @PostMapping(value = "/auth/reset")
-  public ResponseEntity<?> resetPassword(@RequestBody CodeAndNewPassword codeAndNewPassword) {
+  public ResponseEntity<?> resetPassword(@Valid @RequestBody CodeAndNewPasswordDto codeAndNewPasswordDto) {
 
-    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.read(codeAndNewPassword.getCode());
+    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.findByCode(codeAndNewPasswordDto.getCode());
 
     if (existedCode.isPresent()) {
       UserEntity userEntity = userService.read(existedCode.get().getUserId());
-      userEntity.setPassword(passwordEncoder.encode(codeAndNewPassword.getNewPassword()));
+      userEntity.setPassword(passwordEncoder.encode(codeAndNewPasswordDto.getNewPassword()));
       userService.update(userEntity);
 
-      confirmationCodeService.delete(codeAndNewPassword.getCode());
+      confirmationCodeService.delete(userEntity.getUserId());
 
       return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -85,19 +84,12 @@ public class AuthorisationController {
 
   @GetMapping(value = "/auth/check_code")
   public ResponseEntity<?> checkIfResetCodeActual(@RequestBody ConfirmationUserCode codeToCheck) {
-    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.read(codeToCheck.getCodeId());
+
+    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.findByCode(codeToCheck.getCode());
+
     if (existedCode.isPresent()) {
       return new ResponseEntity<>(HttpStatus.OK);
     }
     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-  }
-
-  private void deleteIfAlreadyContainsCodeFor(UserEntity userEntity) {
-    List<ConfirmationUserCode> userCodeList = confirmationCodeService.readAll();
-    for (ConfirmationUserCode confirmationUserCode : userCodeList) {
-      if (confirmationUserCode.getUserId().equals(userEntity.getUserId())) {
-        confirmationCodeService.delete(confirmationUserCode.getCodeId());
-      }
-    }
   }
 }

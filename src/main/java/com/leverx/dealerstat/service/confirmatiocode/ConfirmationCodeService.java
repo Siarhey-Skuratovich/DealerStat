@@ -5,6 +5,7 @@ import com.leverx.dealerstat.model.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ConfirmationCodeService {
 
@@ -12,9 +13,9 @@ public interface ConfirmationCodeService {
 
   List<ConfirmationUserCode> readAll();
 
-  Optional<ConfirmationUserCode> read(int codeId);
+  Optional<ConfirmationUserCode> read(UUID userId);
 
-  boolean update(int codeId);
+  boolean delete(UUID userId);
 
-  boolean delete(int codeId);
+  Optional<ConfirmationUserCode> findByCode(int code);
 }

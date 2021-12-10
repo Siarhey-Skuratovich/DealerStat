@@ -22,7 +22,7 @@ public interface UserService {
 
   boolean confirmUserBy(ConfirmationUserCode existedCode);
 
-  boolean containsNoSuchEmail(String email);
+  boolean existsByEmail(String email);
 
   boolean noUserById(UUID id);
 }

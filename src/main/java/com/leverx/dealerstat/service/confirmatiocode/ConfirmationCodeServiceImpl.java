@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
@@ -23,7 +24,7 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
     ConfirmationUserCode.Builder confirmationUserCodeBuilder = ConfirmationUserCode.newBuilder();
 
     confirmationUserCodeBuilder.setUserId(userEntity.getUserId());
-    confirmationUserCodeBuilder.setCodeId(generateUniqueCode());
+    confirmationUserCodeBuilder.setCode(generateUniqueCode());
 
     ConfirmationUserCode confirmationUserCode = confirmationUserCodeBuilder.build();
 
@@ -37,31 +38,33 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
   }
 
   @Override
-  public Optional<ConfirmationUserCode> read(int codeId) {
-    return codeRepository.findById(codeId);
+  public Optional<ConfirmationUserCode> read(UUID userId) {
+    return codeRepository.findById(userId);
   }
 
-  @Override
-  public boolean update(int codeId) {
-    return false;
-  }
 
   @Override
-  public boolean delete(int codeId) {
-    if (codeRepository.existsById(codeId)) {
-      codeRepository.deleteById(codeId);
+  public boolean delete(UUID userId) {
+    if (codeRepository.existsById(userId)) {
+      codeRepository.deleteById(userId);
       return true;
     }
     return false;
   }
 
+  @Override
+  public Optional<ConfirmationUserCode> findByCode(int code) {
+    return codeRepository.findByCode(code);
+  }
+
   private int generateUniqueCode() {
     SecureRandom secureRandom = new SecureRandom();
-    final int leftBound = 1000000000;
-    int randomCode = secureRandom.nextInt(Integer.MAX_VALUE - leftBound) + leftBound;
-    Optional<ConfirmationUserCode> existedCode = read(randomCode);
+    int randomCode = secureRandom.nextInt(
+            ConfirmationUserCode.MAX_CODE_VALUE - ConfirmationUserCode.MIN_CODE_VALUE) + ConfirmationUserCode.MIN_CODE_VALUE;
+    Optional<ConfirmationUserCode> existedCode = findByCode(randomCode);
     while (existedCode.isPresent()) {
-      randomCode = secureRandom.nextInt(Integer.MAX_VALUE - leftBound) + leftBound;
+      randomCode = secureRandom.nextInt(
+              ConfirmationUserCode.MAX_CODE_VALUE - ConfirmationUserCode.MIN_CODE_VALUE) + ConfirmationUserCode.MIN_CODE_VALUE;
     }
     return randomCode;
   }

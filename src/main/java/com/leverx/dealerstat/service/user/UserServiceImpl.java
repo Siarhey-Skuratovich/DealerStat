@@ -74,9 +74,8 @@ public class UserServiceImpl implements UserService {
       return update(userEntity);
   }
 
-  @Override
-  public boolean containsNoSuchEmail(String email) {
-    return userRepository.findByEmail(email) == null;
+  public boolean existsByEmail(String email) {
+    return userRepository.findByEmail(email) != null;
   }
 
   @Override

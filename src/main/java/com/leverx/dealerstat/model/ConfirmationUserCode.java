@@ -3,15 +3,21 @@ package com.leverx.dealerstat.model;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import java.util.UUID;
 
 @Getter
 @RedisHash(value = "Code", timeToLive = 86400)
 public class ConfirmationUserCode {
+  public static final int MIN_CODE_VALUE = 1000000000;
+  public static final int MAX_CODE_VALUE = Integer.MAX_VALUE;
+
   @Id
-  private int codeId;
   private UUID userId;
+
+  @Indexed
+  private int code;
 
   private ConfirmationUserCode() {}
 
@@ -22,8 +28,8 @@ public class ConfirmationUserCode {
   public class Builder {
     private Builder() {}
 
-    public Builder setCodeId(int codeId) {
-      ConfirmationUserCode.this.codeId = codeId;
+    public Builder setCode(int code) {
+      ConfirmationUserCode.this.code = code;
       return this;
     }
 
@@ -33,7 +39,7 @@ public class ConfirmationUserCode {
     }
 
     public ConfirmationUserCode build() throws InstantiationException {
-      if (codeId == 0 || userId == null) {
+      if (code == 0 || userId == null) {
         throw new InstantiationException();
       }
       return ConfirmationUserCode.this;

@@ -35,35 +35,33 @@ public class RegistrationController {
   @Transactional
   public ResponseEntity<?> createNewUser(@Validated(InfoUserShouldPass.class) @RequestBody UserEntity userEntity,
                                          HttpServletRequest request) {
-    if (userService.containsNoSuchEmail(userEntity.getEmail())) {
-
-      userService.create(userEntity);
-
-      ConfirmationUserCode ConfirmationUserCode = confirmationCodeService.createConfirmationCodeFor(userEntity);
-
-      EmailLetter registrationConfirmationLetter = new EmailLetter(userEntity.getEmail());
-      registrationConfirmationLetter.compileRegistrationLetter(userEntity.getFirstName(), ConfirmationUserCode, getAppURL(request));
-
-      emailLetterService.sendLetter(registrationConfirmationLetter);
-
-      return new ResponseEntity<>(HttpStatus.CREATED);
-    } else {
+    if (userService.existsByEmail(userEntity.getEmail())) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
+
+    userService.create(userEntity);
+
+    ConfirmationUserCode ConfirmationUserCode = confirmationCodeService.createConfirmationCodeFor(userEntity);
+
+    EmailLetter registrationConfirmationLetter = new EmailLetter(userEntity.getEmail());
+    registrationConfirmationLetter.compileRegistrationLetter(userEntity.getFirstName(), ConfirmationUserCode, getAppURL(request));
+
+    emailLetterService.sendLetter(registrationConfirmationLetter);
+
+    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   @GetMapping(value = "/auth/confirm/{codeId}")
   public ResponseEntity<?> checkConfirmationCode(@PathVariable int codeId) {
-    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.read(codeId);
-    if (existedCode.isPresent()) {
-
-      userService.confirmUserBy(existedCode.get());
-      confirmationCodeService.delete(existedCode.get().getCodeId());
-
-      return new ResponseEntity<>(HttpStatus.OK);
-    } else {
+    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.findByCode(codeId);
+    if (existedCode.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    userService.confirmUserBy(existedCode.get());
+    confirmationCodeService.delete(existedCode.get().getUserId());
+
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   private String getAppURL(HttpServletRequest request) {
