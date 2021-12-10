@@ -1,6 +1,5 @@
 package com.leverx.dealerstat.controller;
 
-import com.leverx.dealerstat.config.HibernateUtil;
 import com.leverx.dealerstat.mapping.PostMappingService;
 import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.Post;
@@ -9,7 +8,6 @@ import com.leverx.dealerstat.model.dto.creation.post.PostDto;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
-import org.hibernate.Session;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,8 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -45,14 +45,14 @@ public class PostController {
   @PatchMapping("/articles/{postId}")
   public ResponseEntity<?> addGameObjectToThePost(@PathVariable UUID postId,
                                                   @Validated(InfoUserShouldPass.class) @RequestBody GameObject gameObject) {
-    Session session = HibernateUtil.getSessionFactory().openSession();
-    Post post = session.get(Post.class, postId);
-    session.close();
 
-    if (post == null) {
+    Optional<Post> postOptional = postService.read(postId);
+
+    if (postOptional.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    Post post = postOptional.get();
     post.addGameObject(gameObject);
 
     postService.update(post);
@@ -66,14 +66,20 @@ public class PostController {
   }
 
   @GetMapping(value = "users/{traderId}/articles")
-  public ResponseEntity<Set<Post>> getPostsAboutTrader(@PathVariable UUID traderId) {
+  public ResponseEntity<Set<Post>> getApprovedPostsAboutTrader(@PathVariable UUID traderId) {
 
-    if (userService.noUserById(traderId)) {
+    Optional<UserEntity> traderOptional = userService.read(traderId);
+
+    if (traderOptional.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    UserEntity trader = userService.read(traderId);
-    return new ResponseEntity<>(trader.getPosts(), HttpStatus.OK);
+    Set<Post> approvedPosts = traderOptional.get().getPosts()
+            .stream()
+            .filter(Post::getApproved)
+            .collect(Collectors.toSet());
+
+    return new ResponseEntity<>(approvedPosts, HttpStatus.OK);
   }
 
   @GetMapping(value = "/my")

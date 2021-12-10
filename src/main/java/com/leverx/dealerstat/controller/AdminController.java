@@ -59,6 +59,7 @@ public class AdminController {
   @PatchMapping("articles/{postId}")
   public ResponseEntity<?> approvePost(@PathVariable UUID postId) {
     Optional<Post> optionalPost = postService.read(postId);
+
     if (optionalPost.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -74,6 +75,7 @@ public class AdminController {
   @PatchMapping("comments/{commentId}")
   public ResponseEntity<?> approveComment(@PathVariable UUID commentId) {
     Optional<Comment> commentOptional = commentService.read(commentId);
+
     if (commentOptional.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

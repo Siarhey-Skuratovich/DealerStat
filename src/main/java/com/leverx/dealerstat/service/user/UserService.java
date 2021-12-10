@@ -4,6 +4,7 @@ import com.leverx.dealerstat.model.ConfirmationUserCode;
 import com.leverx.dealerstat.model.UserEntity;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserService {
@@ -12,7 +13,7 @@ public interface UserService {
 
   List<UserEntity> readAll();
 
-  UserEntity read(UUID id);
+  Optional<UserEntity> read(UUID id);
 
   UserEntity read(String email);
 

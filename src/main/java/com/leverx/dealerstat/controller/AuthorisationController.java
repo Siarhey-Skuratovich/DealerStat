@@ -8,7 +8,6 @@ import com.leverx.dealerstat.model.dto.authorisation.passwordreset.EmailDto;
 import com.leverx.dealerstat.service.email.EmailLetterService;
 import com.leverx.dealerstat.service.confirmatiocode.ConfirmationCodeService;
 import com.leverx.dealerstat.service.user.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,26 +69,34 @@ public class AuthorisationController {
 
     Optional<ConfirmationUserCode> existedCode = confirmationCodeService.findByCode(codeAndNewPasswordDto.getCode());
 
-    if (existedCode.isPresent()) {
-      UserEntity userEntity = userService.read(existedCode.get().getUserId());
-      userEntity.setPassword(passwordEncoder.encode(codeAndNewPasswordDto.getNewPassword()));
-      userService.update(userEntity);
-
-      confirmationCodeService.delete(userEntity.getUserId());
-
-      return ResponseEntity.ok().build();
+    if (existedCode.isEmpty()) {
+      return ResponseEntity.notFound().build();
     }
-    return ResponseEntity.notFound().build();
+
+    Optional<UserEntity> userEntityOptional = userService.read(existedCode.get().getUserId());
+
+    if (userEntityOptional.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+
+    UserEntity userEntity = userEntityOptional.get();
+    userEntity.setPassword(passwordEncoder.encode(codeAndNewPasswordDto.getNewPassword()));
+    userService.update(userEntity);
+
+    confirmationCodeService.delete(userEntity.getUserId());
+
+    return ResponseEntity.ok().build();
   }
 
-  @GetMapping(value = "/auth/check_code")
-  public ResponseEntity<?> checkIfResetCodeActual(@RequestBody ConfirmationUserCode codeToCheck) {
 
-    Optional<ConfirmationUserCode> existedCode = confirmationCodeService.findByCode(codeToCheck.getCode());
+    @GetMapping(value = "/auth/check_code")
+    public ResponseEntity<?> checkIfResetCodeActual (@RequestBody ConfirmationUserCode codeToCheck){
 
-    if (existedCode.isPresent()) {
-      return ResponseEntity.ok().build();
+      Optional<ConfirmationUserCode> existedCode = confirmationCodeService.findByCode(codeToCheck.getCode());
+
+      if (existedCode.isPresent()) {
+        return ResponseEntity.ok().build();
+      }
+      return ResponseEntity.notFound().build();
     }
-    return ResponseEntity.notFound().build();
   }
-}

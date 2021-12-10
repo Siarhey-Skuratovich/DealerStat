@@ -54,14 +54,14 @@ public class CommentController {
   }
 
   @GetMapping(value = "/users/{traderId}/comments")
-  public ResponseEntity<Set<Comment>> getAllCommentsRelatedToTheTrader(@PathVariable UUID traderId) {
-    if (userService.noUserById(traderId)) {
+  public ResponseEntity<Set<Comment>> getApprovedCommentsRelatedToTheTrader(@PathVariable UUID traderId) {
+    Optional<UserEntity> traderOptional = userService.read(traderId);
+
+    if (traderOptional.isEmpty()) {
       return ResponseEntity.notFound().build();
     }
 
-    UserEntity trader = userService.read(traderId);
-
-    Set<Post> postsRelatedToTheTrader = trader.getPosts();
+    Set<Post> postsRelatedToTheTrader = traderOptional.get().getPosts();
 
     Set<Comment> comments = postsRelatedToTheTrader
             .stream()

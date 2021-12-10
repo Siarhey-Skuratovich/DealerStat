@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,8 +41,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserEntity read(UUID id) {
-    return userRepository.getById(id);
+  public Optional<UserEntity> read(UUID id) {
+    return userRepository.findById(id);
   }
 
   @Override
@@ -69,8 +70,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean confirmUserBy(ConfirmationUserCode existedCode) {
-      UserEntity userEntity = read(existedCode.getUserId());
+      UserEntity userEntity = userRepository.getById(existedCode.getUserId());
       userEntity.setEnabled(true);
+
       return update(userEntity);
   }
 
