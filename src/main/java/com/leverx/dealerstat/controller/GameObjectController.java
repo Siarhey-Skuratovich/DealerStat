@@ -1,8 +1,8 @@
 package com.leverx.dealerstat.controller;
 
+import com.leverx.dealerstat.service.authorization.GameObjectAuthorshipVerifier;
 import com.leverx.dealerstat.model.Game;
 import com.leverx.dealerstat.model.GameObject;
-import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
@@ -21,11 +21,13 @@ public class GameObjectController {
   private final ServiceOf<GameObject> gameObjectService;
   private final UserService userService;
   private final ServiceOf<Game> gameService;
+  private final GameObjectAuthorshipVerifier gameObjectAuthorshipVerifier;
 
-  public GameObjectController(ServiceOf<GameObject> gameObjectService, UserService userService, ServiceOf<Game> gameService) {
+  public GameObjectController(ServiceOf<GameObject> gameObjectService, UserService userService, ServiceOf<Game> gameService, GameObjectAuthorshipVerifier gameObjectAuthorshipVerifier) {
     this.gameObjectService = gameObjectService;
     this.userService = userService;
     this.gameService = gameService;
+    this.gameObjectAuthorshipVerifier = gameObjectAuthorshipVerifier;
   }
 
   @PostMapping(value = "/objects")
@@ -45,15 +47,22 @@ public class GameObjectController {
   public ResponseEntity<?> updateGameObject(
           @PathVariable UUID gameObjectId,
           @Validated(InfoUserShouldPass.class)
-          @RequestBody GameObject updatedGameObject) {
+          @RequestBody GameObject updatedGameObject,
+          Principal principal) {
 
+    Optional<GameObject> gameObjectOptional = gameObjectService.read(gameObjectId);
+    if (gameObjectOptional.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
 
-    updatedGameObject.setGameObjectId(gameObjectId);
+    if (gameObjectAuthorshipVerifier.hasAuthority(principal, gameObjectOptional.get())) {
+      updatedGameObject.setGameObjectId(gameObjectId);
+      gameObjectService.update(updatedGameObject);
 
-    if (gameObjectService.update(updatedGameObject)) {
       return new ResponseEntity<>(HttpStatus.OK);
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
   }
 
   @GetMapping(value = "/objects")
@@ -63,19 +72,17 @@ public class GameObjectController {
 
   @DeleteMapping(value = "/objects/{gameObjectId}")
   public ResponseEntity<?> deleteGameObject(@PathVariable UUID gameObjectId, Principal principal) {
-    UserEntity currentUser = userService.read(principal.getName());
+
     Optional<GameObject> gameObjectOptional = gameObjectService.read(gameObjectId);
-
     if (gameObjectOptional.isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     }
 
-    if (gameObjectOptional.get().getAuthorId().equals(currentUser.getUserId())) {
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    if (gameObjectAuthorshipVerifier.hasAuthority(principal, gameObjectOptional.get())) {
+      gameObjectService.delete(gameObjectId);
+      return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    gameObjectService.delete(gameObjectId);
-
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
   }
 }

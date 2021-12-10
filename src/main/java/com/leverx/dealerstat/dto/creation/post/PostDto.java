@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.model.dto.creation.post;
+package com.leverx.dealerstat.dto.creation.post;
 
 import com.leverx.dealerstat.model.Game;
 import com.leverx.dealerstat.model.GameObject;

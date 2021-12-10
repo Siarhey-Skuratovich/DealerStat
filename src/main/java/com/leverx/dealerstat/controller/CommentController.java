@@ -1,10 +1,10 @@
 package com.leverx.dealerstat.controller;
 
-import com.leverx.dealerstat.authorization.CommentAuthorization;
+import com.leverx.dealerstat.service.authorization.CommentAuthorshipVerifier;
 import com.leverx.dealerstat.model.Comment;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
-import com.leverx.dealerstat.model.dto.updation.comment.UpdatedCommentMessageDto;
+import com.leverx.dealerstat.dto.updation.comment.UpdatedCommentMessageDto;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
@@ -23,13 +23,13 @@ public class CommentController {
   private final ServiceOf<Comment> commentService;
   private final ServiceOf<Post> postService;
   private final UserService userService;
-  private final CommentAuthorization commentAuthorization;
+  private final CommentAuthorshipVerifier commentAuthorshipVerifier;
 
-  public CommentController(ServiceOf<Comment> commentService, ServiceOf<Post> postService, UserService userService, CommentAuthorization commentAuthorization) {
+  public CommentController(ServiceOf<Comment> commentService, ServiceOf<Post> postService, UserService userService, CommentAuthorshipVerifier commentAuthorshipVerifier) {
     this.commentService = commentService;
     this.postService = postService;
     this.userService = userService;
-    this.commentAuthorization = commentAuthorization;
+    this.commentAuthorshipVerifier = commentAuthorshipVerifier;
   }
 
   @PostMapping(value = "/articles/{postId}/comments")
@@ -102,13 +102,12 @@ public class CommentController {
       return ResponseEntity.notFound().build();
     }
 
-    if (commentAuthorization.hasAuthority(principal, commentOptional.get())) {
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    if (commentAuthorshipVerifier.hasAuthority(principal, commentOptional.get())) {
+      commentService.delete(commentId);
+      return ResponseEntity.ok().build();
     }
 
-    commentService.delete(commentId);
-
-    return ResponseEntity.ok().build();
+    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
   }
 
   @PutMapping("/comments/{commentId}")
@@ -120,16 +119,16 @@ public class CommentController {
       return ResponseEntity.notFound().build();
     }
 
-    if (commentAuthorization.hasAuthority(principal, commentOptional.get())) {
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    if (commentAuthorshipVerifier.hasAuthority(principal, commentOptional.get())) {
+      Comment commentToUpdate = commentOptional.get();
+      commentToUpdate.setMessage(updatedCommentMessageDto.getMessage());
+
+      commentService.update(commentToUpdate);
+
+      return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    Comment commentToUpdate = commentOptional.get();
-    commentToUpdate.setMessage(updatedCommentMessageDto.getMessage());
-
-    commentService.update(commentToUpdate);
-
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
   }
 
   @GetMapping("/comments")

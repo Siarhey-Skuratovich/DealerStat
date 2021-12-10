@@ -4,7 +4,7 @@ import com.leverx.dealerstat.mapping.PostMappingService;
 import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
-import com.leverx.dealerstat.model.dto.creation.post.PostDto;
+import com.leverx.dealerstat.dto.creation.post.PostDto;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;

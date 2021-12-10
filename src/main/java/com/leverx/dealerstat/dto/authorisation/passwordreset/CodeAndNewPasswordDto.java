@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.model.dto.authorisation.passwordreset;
+package com.leverx.dealerstat.dto.authorisation.passwordreset;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import lombok.Getter;
