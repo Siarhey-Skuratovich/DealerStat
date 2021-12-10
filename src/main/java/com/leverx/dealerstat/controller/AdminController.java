@@ -9,6 +9,7 @@ import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
+@Transactional
 @RequestMapping("/***REMOVED***istration")
 public class AdminController {
   private final ConfirmationCodeService confirmationCodeService;

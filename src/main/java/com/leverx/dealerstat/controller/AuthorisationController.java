@@ -10,6 +10,7 @@ import com.leverx.dealerstat.service.confirmatiocode.ConfirmationCodeService;
 import com.leverx.dealerstat.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 @RestController
+@Transactional
 public class AuthorisationController {
   private final UserService userService;
   private final ConfirmationCodeService confirmationCodeService;
