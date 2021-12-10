@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @Validated
+@Transactional
 public class RegistrationController {
   private final ConfirmationCodeService confirmationCodeService;
   private final UserService userService;
@@ -32,7 +33,6 @@ public class RegistrationController {
 
   @SneakyThrows
   @PostMapping(value = "/registration")
-  @Transactional
   public ResponseEntity<?> createNewUser(@Validated(InfoUserShouldPass.class) @RequestBody UserEntity userEntity,
                                          HttpServletRequest request) {
     if (userService.existsByEmail(userEntity.getEmail())) {

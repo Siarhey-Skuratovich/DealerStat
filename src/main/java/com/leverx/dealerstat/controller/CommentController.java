@@ -10,6 +10,7 @@ import com.leverx.dealerstat.service.user.UserService;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
+@Transactional
 public class CommentController {
   private final ServiceOf<Comment> commentService;
   private final ServiceOf<Post> postService;

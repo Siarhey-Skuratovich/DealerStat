@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "games")
+@Component
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Game {
   @Id
