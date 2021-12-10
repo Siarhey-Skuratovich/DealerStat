@@ -39,9 +39,18 @@ public class CommentController {
 
   @GetMapping(value = "/articles/{postId}/comments")
   public ResponseEntity<Set<Comment>> getCommentsOfPost(@PathVariable UUID postId) {
-    Post post = postService.read(postId);
+    Optional<Post> optionalPost = postService.read(postId);
 
-    return new ResponseEntity<>(post.getComments(), HttpStatus.OK);
+    if (optionalPost.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+
+    Set<Comment> approvedComments = optionalPost.get().getComments()
+            .stream()
+            .filter(Comment::getApproved)
+            .collect(Collectors.toSet());
+
+    return new ResponseEntity<>(approvedComments, HttpStatus.OK);
   }
 
   @GetMapping(value = "/users/{traderId}/comments")
@@ -54,9 +63,11 @@ public class CommentController {
 
     Set<Post> postsRelatedToTheTrader = trader.getPosts();
 
-    Set<Comment> comments = postsRelatedToTheTrader.stream()
+    Set<Comment> comments = postsRelatedToTheTrader
+            .stream()
             .map(Post::getComments)
             .flatMap(Collection::parallelStream)
+            .filter(Comment::getApproved)
             .collect(Collectors.toSet());
 
     return new ResponseEntity<>(comments, HttpStatus.OK);
@@ -64,10 +75,12 @@ public class CommentController {
 
   @GetMapping("/comments/{commentId}")
   public ResponseEntity<Comment> getSpecificComment(@PathVariable UUID commentId) {
-    if (commentService.notContainsById(commentId)) {
+    Optional<Comment> optionalComment = commentService.read(commentId);
+
+    if (optionalComment.isEmpty()) {
       return ResponseEntity.notFound().build();
     }
-    return new ResponseEntity<>(commentService.read(commentId), HttpStatus.OK);
+    return new ResponseEntity<>(optionalComment.get(), HttpStatus.OK);
   }
 
   @DeleteMapping("comments/{commentId}")

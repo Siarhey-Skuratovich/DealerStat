@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -57,10 +58,12 @@ public class AdminController {
 
   @PatchMapping("articles/{postId}")
   public ResponseEntity<?> approvePost(@PathVariable UUID postId) {
-    Post post = postService.read(postId);
-    if (post == null) {
+    Optional<Post> optionalPost = postService.read(postId);
+    if (optionalPost.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    Post post = optionalPost.get();
 
     post.setApproved(true);
     postService.update(post);
@@ -70,10 +73,12 @@ public class AdminController {
 
   @PatchMapping("comments/{commentId}")
   public ResponseEntity<?> approveComment(@PathVariable UUID commentId) {
-    Comment comment = commentService.read(commentId);
-    if (comment == null) {
+    Optional<Comment> commentOptional = commentService.read(commentId);
+    if (commentOptional.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    Comment comment = commentOptional.get();
 
     comment.setApproved(true);
     commentService.update(comment);

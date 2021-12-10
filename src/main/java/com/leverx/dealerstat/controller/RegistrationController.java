@@ -53,7 +53,9 @@ public class RegistrationController {
 
   @GetMapping(value = "/auth/confirm/{codeId}")
   public ResponseEntity<?> checkConfirmationCode(@PathVariable int codeId) {
+
     Optional<ConfirmationUserCode> existedCode = confirmationCodeService.findByCode(codeId);
+
     if (existedCode.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

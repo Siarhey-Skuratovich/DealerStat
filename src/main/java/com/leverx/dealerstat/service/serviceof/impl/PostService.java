@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -46,8 +47,8 @@ public class PostService implements ServiceOf<Post> {
   }
 
   @Override
-  public Post read(UUID id) {
-    return postRepository.getById(id);
+  public Optional<Post> read(UUID id) {
+    return postRepository.findById(id);
   }
 
   @Override
@@ -67,11 +68,4 @@ public class PostService implements ServiceOf<Post> {
     }
     return false;
   }
-
-  @Override
-  public boolean notContainsById(UUID id) {
-    return !postRepository.existsById(id);
-  }
-
-
 }

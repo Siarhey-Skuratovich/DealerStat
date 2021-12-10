@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -48,8 +49,8 @@ public class CommentService implements ServiceOf<Comment> {
   }
 
   @Override
-  public Comment read(UUID id) {
-    return commentRepository.getById(id);
+  public Optional<Comment> read(UUID id) {
+    return commentRepository.findById(id);
   }
 
   @Override
@@ -68,10 +69,5 @@ public class CommentService implements ServiceOf<Comment> {
       return true;
     }
     return false;
-  }
-
-  @Override
-  public boolean notContainsById(UUID id) {
-    return !commentRepository.existsById(id);
   }
 }

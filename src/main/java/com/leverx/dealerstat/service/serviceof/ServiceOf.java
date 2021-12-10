@@ -1,6 +1,7 @@
 package com.leverx.dealerstat.service.serviceof;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ServiceOf<T>{
@@ -8,11 +9,9 @@ public interface ServiceOf<T>{
 
   List<T> readAll();
 
-  T read(UUID id);
+  Optional<T> read(UUID id);
 
   boolean update(T t);
 
   boolean delete(UUID id);
-
-  boolean notContainsById(UUID id);
 }

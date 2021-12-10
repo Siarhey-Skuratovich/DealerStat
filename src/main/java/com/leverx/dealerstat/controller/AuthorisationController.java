@@ -37,12 +37,12 @@ public class AuthorisationController {
 
   @PostMapping(value = "/auth")
   public ResponseEntity<?> auth() {
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping(value = "/logout")
   public ResponseEntity<?> logout() {
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping(value = "/auth/forgot_password")
@@ -62,7 +62,7 @@ public class AuthorisationController {
     resetPasswordLetter.compileResetPasswordLetter(userEntity.getFirstName(), confirmationUserCode);
     emailLetterService.sendLetter(resetPasswordLetter);
 
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping(value = "/auth/reset")
@@ -77,9 +77,9 @@ public class AuthorisationController {
 
       confirmationCodeService.delete(userEntity.getUserId());
 
-      return new ResponseEntity<>(HttpStatus.OK);
+      return ResponseEntity.ok().build();
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    return ResponseEntity.notFound().build();
   }
 
   @GetMapping(value = "/auth/check_code")
@@ -88,8 +88,8 @@ public class AuthorisationController {
     Optional<ConfirmationUserCode> existedCode = confirmationCodeService.findByCode(codeToCheck.getCode());
 
     if (existedCode.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.OK);
+      return ResponseEntity.ok().build();
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    return ResponseEntity.notFound().build();
   }
 }

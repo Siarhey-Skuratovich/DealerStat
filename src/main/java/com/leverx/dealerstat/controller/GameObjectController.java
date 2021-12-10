@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -54,17 +55,18 @@ public class GameObjectController {
   @DeleteMapping(value = "/objects/{gameObjectId}")
   public ResponseEntity<?> deleteGameObject(@PathVariable UUID gameObjectId, Principal principal) {
     UserEntity currentUser = userService.read(principal.getName());
-    GameObject gameObject = gameObjectService.read(gameObjectId);
+    Optional<GameObject> gameObjectOptional = gameObjectService.read(gameObjectId);
 
-    if (gameObject.getAuthorId().equals(currentUser.getUserId())) {
+    if (gameObjectOptional.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    if (gameObjectOptional.get().getAuthorId().equals(currentUser.getUserId())) {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    if (gameObjectService.delete(gameObjectId)) {
-      return new ResponseEntity<>(HttpStatus.OK);
-    }
+    gameObjectService.delete(gameObjectId);
 
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

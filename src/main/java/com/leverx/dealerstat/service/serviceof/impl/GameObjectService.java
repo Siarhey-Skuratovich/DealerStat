@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -41,8 +42,8 @@ public class GameObjectService implements ServiceOf<GameObject> {
   }
 
   @Override
-  public GameObject read(UUID id) {
-    return gameObjectRepository.getById(id);
+  public Optional<GameObject> read(UUID id) {
+    return gameObjectRepository.findById(id);
   }
 
   @Override
@@ -61,10 +62,5 @@ public class GameObjectService implements ServiceOf<GameObject> {
       return true;
     }
     return false;
-  }
-
-  @Override
-  public boolean notContainsById(UUID id) {
-    return !gameObjectRepository.existsById(id);
   }
 }

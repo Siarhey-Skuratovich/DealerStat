@@ -32,8 +32,8 @@ public class GameService implements ServiceOf<Game> {
   }
 
   @Override
-  public Game read(UUID id) {
-    return gameRepository.getById(id);
+  public Optional<Game> read(UUID id) {
+    return gameRepository.findById(id);
   }
 
   @Override
@@ -52,10 +52,5 @@ public class GameService implements ServiceOf<Game> {
       return true;
     }
     return false;
-  }
-
-  @Override
-  public boolean notContainsById(UUID id) {
-    return !gameRepository.existsById(id);
   }
 }
