@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
 import javax.sql.DataSource;
 
@@ -18,16 +19,14 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   private final DataSource dataSource;
-  private final AuthenticationEntryPointImpl authenticationEntryPoint;
 
   public static final String ADMIN_USERNAME = "***REMOVED***";
   private static final String ADMIN_PASSWORD = new BCryptPasswordEncoder().encode("***REMOVED***");
   private static final String ADMIN_ROLE = UserEntity.Role.ADMIN.name();
 
 
-  public WebSecurityConfig(DataSource dataSource, AuthenticationEntryPointImpl authenticationEntryPoint) {
+  public WebSecurityConfig(DataSource dataSource) {
     this.dataSource = dataSource;
-    this.authenticationEntryPoint = authenticationEntryPoint;
   }
 
   @Bean
@@ -58,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .loginProcessingUrl("/auth")
             .disable()
             .httpBasic()
-            .authenticationEntryPoint(authenticationEntryPoint)
+            .authenticationEntryPoint(authenticationEntryPoint())
             .and()
             .csrf()
             .disable();
@@ -82,5 +81,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void initialize(AuthenticationManagerBuilder builder) throws Exception {
     builder.inMemoryAuthentication().withUser(ADMIN_USERNAME)
             .password(ADMIN_PASSWORD).roles(ADMIN_ROLE);
+  }
+
+  @Bean
+  public AuthenticationEntryPoint authenticationEntryPoint(){
+    return new AuthenticationEntryPointImpl();
   }
 }

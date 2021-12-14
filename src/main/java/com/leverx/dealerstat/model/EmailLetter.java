@@ -2,9 +2,8 @@ package com.leverx.dealerstat.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
+
 @Getter
 @NoArgsConstructor
 public class EmailLetter {

@@ -7,7 +7,6 @@ import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.AssertFalse;
@@ -22,7 +21,6 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "users")
-@Component
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserEntity {
   @Id
