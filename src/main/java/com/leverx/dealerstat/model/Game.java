@@ -31,10 +31,10 @@ public class Game {
   private String name;
 
   @JsonIgnoreProperties(value = "games")
-  @ManyToMany(mappedBy = "games", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+  @ManyToMany(mappedBy = "games", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   Set<Post> posts = new HashSet<>();
 
   @JsonIgnoreProperties(value = "posts")
-  @OneToMany(mappedBy = "gameId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "gameId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   Set<GameObject> gameObjects = new HashSet<>();
 }

@@ -60,7 +60,7 @@ public class GameObject {
   private UUID gameId;
 
   @JsonIgnoreProperties(value = "gameObjects")
-  @ManyToMany(mappedBy = "gameObjects", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+  @ManyToMany(mappedBy = "gameObjects", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   Set<Post> posts;
 
   public enum Status {
