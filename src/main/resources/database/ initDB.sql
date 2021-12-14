@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE IF NOT EXISTS users
 (
     user_id    UUID PRIMARY KEY,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users
     enabled    BOOLEAN      NOT NULL
 );
 
-DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS posts CASCADE;
 CREATE TABLE IF NOT EXISTS posts
 (
     post_id           UUID PRIMARY KEY,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS posts
     FOREIGN KEY (trader_id) REFERENCES users (user_id) ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS comments CASCADE;
 CREATE TABLE IF NOT EXISTS comments
 (
     comment_id UUID PRIMARY KEY,
@@ -38,14 +38,14 @@ CREATE TABLE IF NOT EXISTS comments
     FOREIGN KEY (post_id) REFERENCES posts (post_id) ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS games;
+DROP TABLE IF EXISTS games CASCADE;
 CREATE TABLE IF NOT EXISTS games
 (
     game_id   UUID PRIMARY KEY,
     game_name VARCHAR(50) NOT NULL UNIQUE
 );
 
-DROP TABLE IF EXISTS posts_games;
+DROP TABLE IF EXISTS posts_games CASCADE;
 CREATE TABLE IF NOT EXISTS posts_games
 (
     post_id UUID,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS posts_games
     FOREIGN KEY (game_id) REFERENCES games (game_id)
 );
 
-DROP TABLE IF EXISTS game_objects;
+DROP TABLE IF EXISTS game_objects CASCADE;
 CREATE TABLE IF NOT EXISTS game_objects
 (
     game_object_id UUID PRIMARY KEY,
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS game_objects
     FOREIGN KEY (game_id) REFERENCES games (game_id) ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS posts_game_objects;
+DROP TABLE IF EXISTS posts_game_objects CASCADE;
 CREATE TABLE IF NOT EXISTS posts_game_objects
 (
     post_id        UUID,

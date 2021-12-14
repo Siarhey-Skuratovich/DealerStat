@@ -4,11 +4,9 @@ import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
-import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Component
 @Getter
 @RedisHash(value = "Code", timeToLive = 86400)
 public class ConfirmationUserCode {

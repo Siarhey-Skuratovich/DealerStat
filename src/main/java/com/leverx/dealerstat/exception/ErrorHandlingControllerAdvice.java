@@ -1,13 +1,17 @@
-package com.leverx.dealerstat.validation;
+package com.leverx.dealerstat.exception;
 
+import com.leverx.dealerstat.dto.validation.ValidationErrorResponse;
+import com.leverx.dealerstat.dto.validation.Violation;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.util.Objects;
 
 @RestControllerAdvice
@@ -41,7 +45,14 @@ class ErrorHandlingControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   Violation onMethodArgumentTypeMismatchException(
           MethodArgumentTypeMismatchException e) {
-    return new Violation(e.getName()," Should be of type "
+    return new Violation(e.getName(), " Should be of type "
             + Objects.requireNonNull(e.getRequiredType()).getName());
+  }
+
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseBody
+  public void handleServiceError(HttpServletResponse response, Exception e) throws IOException {
+    response.getWriter().println(e.getMessage());
   }
 }

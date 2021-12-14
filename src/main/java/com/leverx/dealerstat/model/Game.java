@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -16,7 +15,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "games")
-@Component
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Game {
   @Id
@@ -33,10 +31,10 @@ public class Game {
   private String name;
 
   @JsonIgnoreProperties(value = "games")
-  @ManyToMany(mappedBy = "games", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @ManyToMany(mappedBy = "games", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
   Set<Post> posts = new HashSet<>();
 
   @JsonIgnoreProperties(value = "posts")
-  @OneToMany(mappedBy = "gameId", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "gameId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   Set<GameObject> gameObjects = new HashSet<>();
 }

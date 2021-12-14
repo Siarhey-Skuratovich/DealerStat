@@ -6,7 +6,6 @@ import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.AssertFalse;
@@ -20,7 +19,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "posts")
-@Component
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Post {
   @Id
@@ -59,11 +57,11 @@ public class Post {
   private Boolean approved;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   private Set<Comment> comments;
 
   @JsonIgnoreProperties({"posts", "gameObjects"})
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
   @JoinTable(
           name = "posts_games",
           joinColumns = @JoinColumn(name = "post_id"),
@@ -72,7 +70,7 @@ public class Post {
   Set<Game> games = new HashSet<>();
 
   @JsonIgnoreProperties(value = "posts")
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
   @JoinTable(
           name = "posts_game_objects",
           joinColumns = @JoinColumn(name = "post_id"),
