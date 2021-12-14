@@ -57,11 +57,11 @@ public class Post {
   private Boolean approved;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private Set<Comment> comments;
 
   @JsonIgnoreProperties({"posts", "gameObjects"})
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinTable(
           name = "posts_games",
           joinColumns = @JoinColumn(name = "post_id"),
@@ -70,7 +70,7 @@ public class Post {
   Set<Game> games = new HashSet<>();
 
   @JsonIgnoreProperties(value = "posts")
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinTable(
           name = "posts_game_objects",
           joinColumns = @JoinColumn(name = "post_id"),

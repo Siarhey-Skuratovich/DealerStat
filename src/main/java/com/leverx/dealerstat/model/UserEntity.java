@@ -63,7 +63,7 @@ public class UserEntity {
   private Boolean enabled;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "traderId", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "traderId", fetch = FetchType.LAZY)
   private Set<Post> posts;
 
   public enum Role {

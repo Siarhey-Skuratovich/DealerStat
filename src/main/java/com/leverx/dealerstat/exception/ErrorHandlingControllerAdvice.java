@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.exception;
 
+import com.leverx.dealerstat.dto.exception.AnyExceptionDto;
 import com.leverx.dealerstat.dto.validation.ValidationErrorResponse;
 import com.leverx.dealerstat.dto.validation.Violation;
 import org.springframework.http.HttpStatus;
@@ -51,8 +52,7 @@ class ErrorHandlingControllerAdvice {
 
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  @ResponseBody
-  public void handleServiceError(HttpServletResponse response, Exception e) throws IOException {
-    response.getWriter().println(e.getMessage());
+  AnyExceptionDto handleServiceError(Exception e) {
+    return new AnyExceptionDto(e.getMessage());
   }
 }

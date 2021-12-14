@@ -4,6 +4,7 @@ import com.leverx.dealerstat.model.Game;
 import com.leverx.dealerstat.repository.postgresql.GameRepository;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
