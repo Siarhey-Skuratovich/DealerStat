@@ -1,6 +1,7 @@
 package com.leverx.dealerstat.controller;
 
-import com.leverx.dealerstat.mapping.PostMappingService;
+import com.leverx.dealerstat.model.Game;
+import com.leverx.dealerstat.service.mapping.PostMappingService;
 import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
@@ -10,7 +11,6 @@ import com.leverx.dealerstat.service.user.UserService;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -102,14 +102,22 @@ public class PostController {
     return new ResponseEntity<>(user.getPosts(), HttpStatus.OK);
   }
 
-  /*@GetMapping("/articles/{postId}")
+  @GetMapping("/articles/{postId}")
   public ResponseEntity<Post> getSpecifiedPost(@PathVariable UUID postId) {
-    return new ResponseEntity<>(postService.read(postId), HttpStatus.OK);
-  }*/
+    Optional<Post> postOptional = postService.read(postId);
 
-    /*@GetMapping("/articles/{postId}/games")
+    if (postOptional.isPresent() && postOptional.get().getApproved()) {
+      return new ResponseEntity<>(postOptional.get(), HttpStatus.OK);
+    }
+
+    return ResponseEntity.notFound().build();
+  }
+
+  @GetMapping("/articles/{postId}/games")
   public ResponseEntity<Set<Game>> getGamesRelatedToThePost(@PathVariable UUID postId) {
-    Post post = postService.read(postId);
-    return new ResponseEntity<>(post.getGames(), HttpStatus.OK);
-  }*/
+    Optional<Post> postOptional = postService.read(postId);
+    return postOptional
+            .map(post -> new ResponseEntity<>(post.getGames(), HttpStatus.OK))
+            .orElseGet(() -> ResponseEntity.notFound().build());
+  }
 }

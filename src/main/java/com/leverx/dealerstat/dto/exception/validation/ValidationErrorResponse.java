@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.dto.validation;
+package com.leverx.dealerstat.dto.exception.validation;
 
 import lombok.Getter;
 

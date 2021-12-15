@@ -1,6 +1,7 @@
 package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.model.Game;
+import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 public class GameController {
@@ -44,9 +48,18 @@ public class GameController {
     return new ResponseEntity<>(gameService.readAll(), HttpStatus.OK);
   }
 
-  /*@GetMapping("/games/{gameId}/posts")
+  @GetMapping("/games/{gameId}/posts")
   public ResponseEntity<Set<Post>> getPostsRelatedToTheGame(@PathVariable UUID gameId) {
-    Game game = gameService.read(gameId);
-    return new ResponseEntity<>(game.getPosts(), HttpStatus.OK);
-  }*/
+    Optional<Game> gameOptional = gameService.read(gameId);
+
+    if (gameOptional.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+
+    Set<Post> approvedPosts = gameOptional.get().getPosts().stream()
+            .filter(Post::getApproved)
+            .collect(Collectors.toSet());
+
+    return new ResponseEntity<>(approvedPosts, HttpStatus.OK);
+  }
 }
