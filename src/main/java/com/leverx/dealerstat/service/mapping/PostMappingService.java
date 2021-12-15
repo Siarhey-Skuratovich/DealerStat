@@ -1,23 +1,20 @@
-package com.leverx.dealerstat.mapping;
+package com.leverx.dealerstat.service.mapping;
 
 import com.leverx.dealerstat.model.Game;
 import com.leverx.dealerstat.model.GameObject;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.dto.creation.post.PostDto;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
-import com.leverx.dealerstat.service.user.UserService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PostMappingService {
   private final ServiceOf<Game> gameService;
   private final ServiceOf<GameObject> gameObjectService;
-  private final UserService userService;
 
-  public PostMappingService(ServiceOf<Game> gameService, ServiceOf<GameObject> gameObjectService, UserService userService) {
+  public PostMappingService(ServiceOf<Game> gameService, ServiceOf<GameObject> gameObjectService) {
     this.gameService = gameService;
     this.gameObjectService = gameObjectService;
-    this.userService = userService;
   }
 
   public Post mapFromDtoToPostEntity(PostDto postDto) {

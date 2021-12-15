@@ -1,18 +1,16 @@
 package com.leverx.dealerstat.exception;
 
 import com.leverx.dealerstat.dto.exception.AnyExceptionDto;
-import com.leverx.dealerstat.dto.validation.ValidationErrorResponse;
-import com.leverx.dealerstat.dto.validation.Violation;
+import com.leverx.dealerstat.dto.exception.validation.ValidationErrorResponse;
+import com.leverx.dealerstat.dto.exception.validation.Violation;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.io.IOException;
 import java.util.Objects;
 
 @RestControllerAdvice

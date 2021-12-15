@@ -10,7 +10,6 @@ import com.leverx.dealerstat.service.user.UserService;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -136,19 +135,5 @@ public class CommentController {
   public ResponseEntity<List<Comment>> getApprovedComments() {
     return new ResponseEntity<>(commentService.readAll(), HttpStatus.OK);
   }
-
-    /*@GetMapping(value = "/users/{traderId}/comments/{commentId}")
-  public ResponseEntity<Comment> getSpecificCommentRelatedToTheTrader(@PathVariable UUID traderId, @PathVariable UUID commentId) {
-    UserEntity trader = userService.read(traderId);
-    Set<Post> postsRelatedToTheTrader = trader.getPosts();
-    Optional<Comment> specificComment = postsRelatedToTheTrader.stream()
-            .map(Post::getComments)
-            .flatMap(Collection::parallelStream)
-            .filter(comment -> comment.getCommentId().equals(commentId))
-            .findFirst();
-    return specificComment
-            .map(comment -> new ResponseEntity<>(comment, HttpStatus.OK))
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }*/
 }
 
