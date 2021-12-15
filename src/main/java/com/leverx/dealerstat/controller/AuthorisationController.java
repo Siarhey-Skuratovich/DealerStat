@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 @RestController
-@Transactional
 public class AuthorisationController {
   private final UserService userService;
   private final ConfirmationCodeService confirmationCodeService;

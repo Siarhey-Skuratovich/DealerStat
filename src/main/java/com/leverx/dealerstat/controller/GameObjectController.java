@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@Transactional
 public class GameObjectController {
   private final ServiceOf<GameObject> gameObjectService;
   private final UserService userService;
