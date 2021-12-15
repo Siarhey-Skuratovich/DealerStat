@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@Transactional
 @RequestMapping("/***REMOVED***istration")
 public class AdminController {
   private final ConfirmationCodeService confirmationCodeService;

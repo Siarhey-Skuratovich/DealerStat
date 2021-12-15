@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@Transactional
 public class PostController {
   private final ServiceOf<Post> postService;
   private final UserService userService;

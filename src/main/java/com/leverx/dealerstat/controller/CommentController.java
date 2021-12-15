@@ -20,7 +20,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@Transactional
 public class CommentController {
   private final ServiceOf<Comment> commentService;
   private final ServiceOf<Post> postService;
