@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashSet;
 
 @Service("userDetailsService")
@@ -27,27 +26,21 @@ public class UserDetailServiceImpl implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     final UserEntity userEntity = userRepository.findByEmail(email);
-    System.out.println(userEntity.toString());
     boolean enabled = !userEntity.getEnabled();
+
     if (userEntity == null || !enabled) {
       throw new UsernameNotFoundException(email);
     }
 
-    UserDetails userDetails = User.withUsername(userEntity.getEmail())
+    return User.withUsername(userEntity.getEmail())
             .password(userEntity.getPassword())
             .disabled(!userEntity.getEnabled())
-            .authorities(getAuthorities(userEntity)).build()
-            ;
-
-    return userDetails;
+            .authorities(getAuthorities(userEntity)).build();
   }
 
   private Collection<GrantedAuthority> getAuthorities(UserEntity user){
-    EnumSet<UserEntity.Role> roles = EnumSet.allOf(UserEntity.Role.class);
-    Collection<GrantedAuthority> authorities = new HashSet<>(roles.size());
-    for(UserEntity.Role role : roles){
-      authorities.add(new SimpleGrantedAuthority(role.name()));
-    }
+    Collection<GrantedAuthority> authorities = new HashSet<>();
+      authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
     return authorities;
   }
 }

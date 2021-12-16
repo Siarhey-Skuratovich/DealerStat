@@ -2,7 +2,6 @@ package com.leverx.dealerstat.repository.redis;
 
 import com.leverx.dealerstat.model.ConfirmationUserCode;
 import org.springframework.data.keyvalue.repository.KeyValueRepository;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
