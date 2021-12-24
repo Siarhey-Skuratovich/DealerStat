@@ -1,8 +1,9 @@
 package com.leverx.dealerstat.config;
 
-import com.leverx.dealerstat.model.UserEntity;
+import com.leverx.dealerstat.service.***REMOVED***.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,16 +18,14 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
+@ComponentScan(value = "com.leverx.dealerstat.service.***REMOVED***")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   private final DataSource dataSource;
+  private final AdminService ***REMOVED***Service;
 
-  public static final String ADMIN_USERNAME = "***REMOVED***";
-  private static final String ADMIN_PASSWORD = new BCryptPasswordEncoder().encode("***REMOVED***");
-  private static final String ADMIN_ROLE = UserEntity.Role.ADMIN.name();
-
-
-  public WebSecurityConfig(DataSource dataSource) {
+  public WebSecurityConfig(DataSource dataSource, AdminService ***REMOVED***Service) {
     this.dataSource = dataSource;
+    this.***REMOVED***Service = ***REMOVED***Service;
   }
 
   @Bean
@@ -47,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.GET, "/***REMOVED***istration/**")
-            .hasRole(ADMIN_ROLE)
+            .hasRole(***REMOVED***Service.getAdminRole())
             .and()
             .authorizeRequests()
             .anyRequest()
@@ -79,8 +78,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   public void initialize(AuthenticationManagerBuilder builder) throws Exception {
-    builder.inMemoryAuthentication().withUser(ADMIN_USERNAME)
-            .password(ADMIN_PASSWORD).roles(ADMIN_ROLE);
+    builder.inMemoryAuthentication()
+            .withUser(***REMOVED***Service.getAdminLogin())
+            .password(***REMOVED***Service.getEncryptedAdminPassword())
+            .roles(***REMOVED***Service.getAdminRole());
   }
 
   @Bean

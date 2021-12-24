@@ -4,6 +4,7 @@ import com.leverx.dealerstat.config.WebSecurityConfig;
 import com.leverx.dealerstat.model.Post;
 import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.repository.postgresql.PostRepository;
+import com.leverx.dealerstat.service.***REMOVED***.AdminService;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -20,10 +21,12 @@ import java.util.UUID;
 public class PostService implements ServiceOf<Post> {
   private final PostRepository postRepository;
   private final UserService userService;
+  private final AdminService ***REMOVED***Service;
 
-  public PostService(PostRepository postRepository, UserService userService) {
+  public PostService(PostRepository postRepository, UserService userService, AdminService ***REMOVED***Service) {
     this.postRepository = postRepository;
     this.userService = userService;
+    this.***REMOVED***Service = ***REMOVED***Service;
   }
 
   @Override
@@ -41,7 +44,7 @@ public class PostService implements ServiceOf<Post> {
   @Override
   public List<Post> readAll() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication.getName().equals(WebSecurityConfig.ADMIN_USERNAME)) {
+    if (authentication.getName().equals(***REMOVED***Service.getAdminLogin())) {
       return postRepository.findAll();
     } else {
       return postRepository.findByApproved(true);
