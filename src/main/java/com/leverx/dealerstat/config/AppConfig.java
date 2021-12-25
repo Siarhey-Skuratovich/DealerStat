@@ -1,8 +1,10 @@
 package com.leverx.dealerstat.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
@@ -18,6 +20,7 @@ import java.util.Properties;
 @EnableWebMvc
 @ComponentScan(basePackages = "com.leverx.dealerstat")
 @EnableTransactionManagement
+@PropertySource("classpath:security.properties")
 public class AppConfig implements WebMvcConfigurer {
 
   private final EntityManagerFactory emf;
@@ -34,13 +37,16 @@ public class AppConfig implements WebMvcConfigurer {
   }
 
   @Bean
-  public JavaMailSender getJavaMailSender() {
+  public JavaMailSender getJavaMailSender(@Value("${mailSender.host}") String host,
+                                          @Value("${mailSender.port}") int port,
+                                          @Value("${mailSender.username}") String username,
+                                          @Value("${mailSender.password}") String password) {
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-    mailSender.setHost("***REMOVED***");
-    mailSender.setPort(***REMOVED***);
+    mailSender.setHost(host);
+    mailSender.setPort(port);
 
-    mailSender.setUsername("***REMOVED***");
-    mailSender.setPassword("***REMOVED***");
+    mailSender.setUsername(username);
+    mailSender.setPassword(password);
 
     Properties props = mailSender.getJavaMailProperties();
     props.put("mail.transport.protocol", "smtp");
