@@ -20,7 +20,6 @@ import java.util.Properties;
 @EnableWebMvc
 @ComponentScan(basePackages = "com.leverx.dealerstat")
 @EnableTransactionManagement
-@PropertySource("classpath:security.properties")
 public class AppConfig implements WebMvcConfigurer {
 
   private final EntityManagerFactory emf;
