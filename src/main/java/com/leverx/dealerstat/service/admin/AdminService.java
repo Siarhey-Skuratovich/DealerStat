@@ -19,6 +19,7 @@ public class AdminService {
 
     Properties securityProperties = new Properties();
     securityProperties.load(reader);
+
     this.securityProperties = securityProperties;
   }
 
