@@ -3,6 +3,7 @@ package com.leverx.dealerstat.config;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -21,13 +22,19 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "com.leverx.dealerstat.repository")
 public class RepositoryConfig {
 
+  private final Environment environment;
+
+  public RepositoryConfig(Environment environment) {
+    this.environment = environment;
+  }
+
   @Bean
   public DataSource getDataSource() {
     BasicDataSource bds = new BasicDataSource();
     bds.setDriverClassName("org.postgresql.Driver");
-    bds.setUrl("***REMOVED***");
-    bds.setUsername("***REMOVED***");
-    bds.setPassword("***REMOVED***");
+    bds.setUrl(environment.getProperty("dataSource.url"));
+    bds.setUsername(environment.getProperty("dataSource.username"));
+    bds.setPassword(environment.getProperty("dataSource.password"));
     return bds;
   }
 
