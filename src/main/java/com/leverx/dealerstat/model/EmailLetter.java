@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmailLetter {
 
-  private final String fromAddress = "***REMOVED***";
+  private final String fromAddress = "dealerstat8@gmail.com";
   private final String senderName = "Dealer Stat";
 
   private String destinationEmail;
