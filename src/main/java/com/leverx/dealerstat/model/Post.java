@@ -3,6 +3,7 @@ package com.leverx.dealerstat.model;
 import com.fasterxml.jackson.annotation.*;
 import com.leverx.dealerstat.validation.groups.AdvancedInfo;
 import com.leverx.dealerstat.validation.groups.InfoUserShouldPass;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;

@@ -1,5 +1,7 @@
 package com.leverx.dealerstat.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -10,6 +12,8 @@ import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @RedisHash(value = "Code", timeToLive = ConfirmationUserCode.TIME_TO_LIVE_IN_SECONDS)
 public class ConfirmationUserCode {
   public static final int MIN_CODE_VALUE = 1000000000;
@@ -21,29 +25,4 @@ public class ConfirmationUserCode {
 
   @Indexed
   private int code;
-
-  public static Builder newBuilder() {
-    return new ConfirmationUserCode().new Builder();
-  }
-
-  public class Builder {
-    private Builder() {}
-
-    public Builder setCode(int code) {
-      ConfirmationUserCode.this.code = code;
-      return this;
-    }
-
-    public Builder setUserId(UUID userId) {
-      ConfirmationUserCode.this.userId = userId;
-      return this;
-    }
-
-    public ConfirmationUserCode build() throws InstantiationException {
-      if (code == 0 || userId == null) {
-        throw new InstantiationException();
-      }
-      return ConfirmationUserCode.this;
-    }
-  }
 }

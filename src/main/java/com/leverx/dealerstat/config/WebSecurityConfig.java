@@ -1,6 +1,6 @@
 package com.leverx.dealerstat.config;
 
-import com.leverx.dealerstat.service.***REMOVED***.AdminService;
+import com.leverx.dealerstat.service.admin.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,14 +20,14 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:security.properties")
-@ComponentScan(value = "com.leverx.dealerstat.service.***REMOVED***")
+@ComponentScan(value = "com.leverx.dealerstat.service.admin")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   private final DataSource dataSource;
-  private final AdminService ***REMOVED***Service;
+  private final AdminService adminService;
 
-  public WebSecurityConfig(DataSource dataSource, AdminService ***REMOVED***Service) {
+  public WebSecurityConfig(DataSource dataSource, AdminService adminService) {
     this.dataSource = dataSource;
-    this.***REMOVED***Service = ***REMOVED***Service;
+    this.adminService = adminService;
   }
 
   @Bean
@@ -47,8 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/***REMOVED***istration/**")
-            .hasRole(***REMOVED***Service.getAdminRole())
+            .antMatchers(HttpMethod.GET, "/administration/**")
+            .hasRole(adminService.getAdminRole())
             .and()
             .authorizeRequests()
             .anyRequest()
@@ -81,9 +81,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   public void initialize(AuthenticationManagerBuilder builder) throws Exception {
     builder.inMemoryAuthentication()
-            .withUser(***REMOVED***Service.getAdminLogin())
-            .password(***REMOVED***Service.getEncryptedAdminPassword())
-            .roles(***REMOVED***Service.getAdminRole());
+            .withUser(adminService.getAdminLogin())
+            .password(adminService.getEncryptedAdminPassword())
+            .roles(adminService.getAdminRole());
   }
 
   @Bean
