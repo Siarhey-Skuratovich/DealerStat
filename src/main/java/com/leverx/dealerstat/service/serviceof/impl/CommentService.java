@@ -3,7 +3,7 @@ package com.leverx.dealerstat.service.serviceof.impl;
 import com.leverx.dealerstat.model.Comment;
 import com.leverx.dealerstat.model.UserEntity;
 import com.leverx.dealerstat.repository.postgresql.CommentRepository;
-import com.leverx.dealerstat.service.***REMOVED***.AdminService;
+import com.leverx.dealerstat.service.admin.AdminService;
 import com.leverx.dealerstat.service.serviceof.ServiceOf;
 import com.leverx.dealerstat.service.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -19,12 +19,12 @@ import java.util.UUID;
 public class CommentService implements ServiceOf<Comment> {
   private final CommentRepository commentRepository;
   private final UserService userService;
-  private final AdminService ***REMOVED***Service;
+  private final AdminService adminService;
 
-  public CommentService(CommentRepository commentRepository, UserService userService, AdminService ***REMOVED***Service) {
+  public CommentService(CommentRepository commentRepository, UserService userService, AdminService adminService) {
     this.commentRepository = commentRepository;
     this.userService = userService;
-    this.***REMOVED***Service = ***REMOVED***Service;
+    this.adminService = adminService;
   }
 
   @Override
@@ -43,7 +43,7 @@ public class CommentService implements ServiceOf<Comment> {
   @Override
   public List<Comment> readAll() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication.getName().equals(***REMOVED***Service.getAdminLogin())) {
+    if (authentication.getName().equals(adminService.getAdminLogin())) {
       return commentRepository.findAll();
     }
 

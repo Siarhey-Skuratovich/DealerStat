@@ -1,4 +1,4 @@
-package com.leverx.dealerstat.service.***REMOVED***;
+package com.leverx.dealerstat.service.admin;
 
 import com.leverx.dealerstat.model.UserEntity;
 import org.springframework.core.env.Environment;
@@ -15,11 +15,11 @@ public class AdminService {
   }
 
   public String getAdminLogin() {
-    return environment.getProperty("***REMOVED***.login");
+    return environment.getProperty("admin.login");
   }
 
   public String getEncryptedAdminPassword() {
-    return new BCryptPasswordEncoder().encode(environment.getProperty("***REMOVED***.password"));
+    return new BCryptPasswordEncoder().encode(environment.getProperty("admin.password"));
   }
 
   public String getAdminRole() {

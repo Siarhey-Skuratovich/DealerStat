@@ -20,14 +20,11 @@ public class ConfirmationCodeServiceImpl implements ConfirmationCodeService {
   }
 
   @Override
-  public ConfirmationUserCode createConfirmationCodeFor(UserEntity userEntity) throws InstantiationException {
-    ConfirmationUserCode.Builder confirmationUserCodeBuilder = ConfirmationUserCode.newBuilder();
-
-    confirmationUserCodeBuilder.setUserId(userEntity.getUserId());
-    confirmationUserCodeBuilder.setCode(generateUniqueCode());
-
-    ConfirmationUserCode confirmationUserCode = confirmationUserCodeBuilder.build();
-
+  public ConfirmationUserCode createConfirmationCodeFor(UserEntity userEntity) {
+    ConfirmationUserCode confirmationUserCode = ConfirmationUserCode.builder()
+            .userId(userEntity.getUserId())
+            .code(generateUniqueCode())
+            .build();
     codeRepository.save(confirmationUserCode);
     return confirmationUserCode;
   }
