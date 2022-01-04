@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/***REMOVED***istration")
+@RequestMapping("/administration")
 public class AdminController {
   private final ConfirmationCodeService confirmationCodeService;
   private final UserService userService;
